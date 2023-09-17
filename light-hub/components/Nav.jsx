@@ -30,7 +30,7 @@ export default function Nav() {
               {link.href === path && (
                 <motion.span
                   layoutId="underline"
-                  className="absolute left-0 top-full block h-[1px] w-full bg-black"
+                  className="absolute left-0 top-full block h-[1px] w-full bg-black dark:bg-white"
                 />
               )}
               {link.label}

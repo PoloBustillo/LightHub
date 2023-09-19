@@ -9,30 +9,30 @@ const NotFound = () => {
   const [step, setStep] = useState(0);
   //https://lottie.host/e88f4f6a-b477-4045-b491-9f703ce1306c/Ri8Tp3H5Jq.json
   const steps = [
+    // {
+    //   id: 1,
+    //   text: "EL EQUIPO ANDABA DE CAMPING",
+    //   animation:
+    //     "https://lottie.host/3b283dae-e0f1-4d66-a29f-e2c17698e779/CyppT2ni5Q.json",
+    //   motion:
+    //     theme == "dark"
+    //       ? {
+    //           initial: { opacity: 0, x: [0, 50, -50, 50, -50, 0] },
+    //           animate: { opacity: 1, x: [50, -50, 50, -50, 0, 0] },
+    //           exit: { opacity: 0, x: [0, 50, -50, 50, -50, 0] },
+    //           transition: {
+    //             duration: 4, // Adjust the duration as desired
+    //             ease: "easeOut",
+    //           },
+    //         }
+    //       : {
+    //           initial: { opacity: 1 },
+    //           animate: { opacity: 1 },
+    //           exit: { opacity: 1 },
+    //         },
+    // },
     {
       id: 1,
-      text: "EL EQUIPO DE TRABAJO ANDA DE CAMPING",
-      animation:
-        "https://lottie.host/3b283dae-e0f1-4d66-a29f-e2c17698e779/CyppT2ni5Q.json",
-      motion:
-        theme == "dark"
-          ? {
-              initial: { opacity: 0, x: [0, 50, -50, 50, -50, 0] },
-              animate: { opacity: 1, x: [50, -50, 50, -50, 0, 0] },
-              exit: { opacity: 0, x: [0, 50, -50, 50, -50, 0] },
-              transition: {
-                duration: 4, // Adjust the duration as desired
-                ease: "easeOut",
-              },
-            }
-          : {
-              initial: { opacity: 1 },
-              animate: { opacity: 1 },
-              exit: { opacity: 1 },
-            },
-    },
-    {
-      id: 2,
       text: "LOS ALIENS SI EXISTEN",
       animation:
         "https://lottie.host/791d6018-28b3-4277-a95a-45ffc9ef1dd1/TghamkiQlN.json",
@@ -47,7 +47,7 @@ const NotFound = () => {
       },
     },
     {
-      id: 3,
+      id: 2,
       text: "YA NO TENEMOS EQUIPO",
       animation:
         "https://lottie.host/e50d6c0b-1481-4f59-8046-6b10fc3f0856/5pX12q2O74.json",
@@ -93,8 +93,22 @@ const NotFound = () => {
           />
         </motion.div>
         <h2 className="text-l md:text-xl  font-semibold  text-center dark:text-gray-400 ">
-          {steps[step].text}
+          RUTA NO ENCONTRADA
         </h2>
+        <motion.span
+          className="text-medium md:text-l  font-semibold  text-center dark:text-gray-400 "
+          animate={{ opacity: 1, x: [-15, 15, 0] }}
+          initial={{ opacity: 0, x: 0 }}
+          transition={{
+            delay: 0.2,
+            duration: 2,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        >
+          {steps[step].text}
+        </motion.span>
       </div>
     </div>
   );

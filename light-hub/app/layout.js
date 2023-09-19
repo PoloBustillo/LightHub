@@ -4,7 +4,8 @@ import Nav from "@/components/Nav";
 import { Providers } from "./providers";
 import { Lora } from "next/font/google";
 import { Footer } from "@/components/Footer";
-import { APP_NAME, APP_DESCRIPTION } from "@/contants";
+import { APP_NAME, APP_DESCRIPTION } from "@/utils/contants";
+import Particles from "@/components/Particles";
 const inter = Inter({ subsets: ["latin"] });
 
 const lora = Lora({
@@ -25,6 +26,12 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <Nav></Nav>
+
+          <Particles
+            className="absolute inset-0 -z-10 animate-fade-in"
+            quantity={300}
+          />
+
           {children}
           <Footer></Footer>
         </Providers>

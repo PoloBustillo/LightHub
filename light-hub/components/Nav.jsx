@@ -35,17 +35,20 @@ export default function Nav() {
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           />
         </NavbarContent>
-
-        <NavbarBrand className="sm:hidden pr-3 justify-center">
-          <Icon></Icon>
-          <p className="font-bold text-inherit">{APP_NAME}</p>
-        </NavbarBrand>
-
-        <NavbarContent className="hidden sm:flex gap-4 justify-center">
-          <NavbarBrand>
+        <Link href={"/"}>
+          <NavbarBrand className="sm:hidden pr-3 justify-center">
             <Icon></Icon>
             <p className="font-bold text-inherit">{APP_NAME}</p>
           </NavbarBrand>
+        </Link>
+
+        <NavbarContent className="hidden sm:flex gap-4 justify-center">
+          <Link href={"/"}>
+            <NavbarBrand>
+              <Icon></Icon>
+              <p className="font-bold text-inherit">{APP_NAME}</p>
+            </NavbarBrand>
+          </Link>
           {links.map((link) => (
             <NavbarItem>
               <Link className="relative" href={link.href}>

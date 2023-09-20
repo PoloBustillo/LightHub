@@ -13,13 +13,15 @@ module.exports = {
       fontFamily: {
         // sans: ["var(--font-lora)"],
         mono: ["var(--font-lora)"],
+        display: ["var(--font-calsans)"],
       },
       animation: {
-        "enter-line": "fade-in 3s ease-in forwards",
         "fade-in": "fade-in 3s ease-in-out forwards",
-        title: "title 3s ease-out forwards",
+        title: "title 6s ease-out forwards",
         "fade-left": "fade-left 3s ease-in-out forwards",
+        "enter-right": "enter-right 3s ease-in-out forwards",
         "fade-right": "fade-right 3s ease-in-out forwards",
+        "enter-line": "fade-in 3s ease-in-out forwards",
       },
       keyframes: {
         "fade-in": {
@@ -59,6 +61,23 @@ module.exports = {
           },
           "100%": {
             opacity: "0%",
+          },
+        },
+        "enter-right": {
+          "0%": {
+            transform: "translateX(-100%)",
+            opacity: "0%",
+          },
+
+          "30%": {
+            transform: "translateX(0%)",
+            opacity: "80%",
+          },
+          "80%": {
+            opacity: "40%",
+          },
+          "100%": {
+            opacity: "100%",
           },
         },
         title: {

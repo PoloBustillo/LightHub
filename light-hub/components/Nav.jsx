@@ -38,7 +38,7 @@ export default function Nav() {
         <Link href={"/"}>
           <NavbarBrand className="sm:hidden pr-3 justify-center">
             <Icon></Icon>
-            <p className="font-bold text-inherit">{APP_NAME}</p>
+            <h1 className="font-title font-bold pl-1">{APP_NAME}</h1>
           </NavbarBrand>
         </Link>
 
@@ -46,17 +46,17 @@ export default function Nav() {
           <Link href={"/"}>
             <NavbarBrand>
               <Icon></Icon>
-              <p className="font-bold text-inherit">{APP_NAME}</p>
+              <h1 className="font-title2 font-bold pl-15">{APP_NAME}</h1>
             </NavbarBrand>
           </Link>
           {links.map((link) => (
             <NavbarItem>
-              <Link className="relative" href={link.href}>
+              <Link className="relative font-title2" href={link.href}>
                 {link.href === path && (
                   <motion.span
                     layoutId="underline"
                     transition={{ type: "spring", bounce: 0.35 }}
-                    className="absolute left-0 top-full block h-[1px] w-full bg-black dark:bg-white"
+                    className="absolute left-0 top-full block h-[3px] w-full bg-black dark:bg-white"
                   />
                 )}
                 {link.label}

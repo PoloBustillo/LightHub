@@ -1,9 +1,8 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Bevan, Francois_One, Inter, Lora } from "next/font/google";
 import Nav from "@/components/Nav";
 import { Providers } from "./providers";
 import localFont from "next/font/local";
-import { Lora } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { APP_NAME, APP_DESCRIPTION } from "@/utils/contants";
 const inter = Inter({ subsets: ["latin"] });
@@ -12,6 +11,18 @@ const lora = Lora({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-lora",
+  display: "swap",
+});
+const bevan = Bevan({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-bevan",
+  display: "swap",
+});
+const francois = Francois_One({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-francois_one",
   display: "swap",
 });
 
@@ -29,7 +40,13 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={[inter.variable, lora.variable, calSans.variable].join(" ")}
+      className={[
+        inter.variable,
+        lora.variable,
+        calSans.variable,
+        bevan.variable,
+        francois.variable,
+      ].join(" ")}
     >
       <body>
         <Providers>

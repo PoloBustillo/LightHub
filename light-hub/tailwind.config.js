@@ -11,7 +11,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // sans: ["var(--font-lora)"],
+        title: ["var(--font-bevan)"],
+        title2: ["var(--font-francois_one)"],
         mono: ["var(--font-lora)"],
         display: ["var(--font-calsans)"],
       },

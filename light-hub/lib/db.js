@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import * as Sentry from "@sentry/nextjs";
 
 const { DB_URL } = process.env;
 
@@ -9,11 +10,12 @@ export const connectDB = async () => {
   try {
     const { connection } = await mongoose.connect(DB_URL);
     if (connection.readyState === 1) {
+      Sentry.captureMessage("Conectado a MongoDB", "info");
       console.log("Conectado a la DB!!");
       return Promise.resolve(true);
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return Promise.reject(false);
   }
 };

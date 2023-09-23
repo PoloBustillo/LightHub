@@ -1,13 +1,4 @@
 {
-  "name": "light-hub",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.5.3",
     "@nextui-org/react": "^2.1.13",
@@ -28,5 +19,14 @@
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
     "typescript": "5.2.2"
-  }
+  },
+  "name": "light-hub",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "set NODE_ENV=development & next start"
+  },
+  "version": "0.1.0"
 }

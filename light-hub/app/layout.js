@@ -4,7 +4,7 @@ import Nav from "@/components/Nav";
 import { Providers } from "./providers";
 import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
-import { APP_NAME, APP_DESCRIPTION } from "@/utils/contants";
+import { APP_NAME, APP_DESCRIPTION } from "@/utils/constants";
 const inter = Inter({ subsets: ["latin"] });
 
 const lora = Lora({

@@ -7,14 +7,14 @@ import {
   NavbarItem,
   NavbarMenuToggle,
 } from "@nextui-org/navbar";
-
+import { signIn, useSession, signOut } from "next-auth/react";
 import React from "react";
 import { Button } from "@nextui-org/button";
 import { ThemeSwitcher } from "./ThemeSwitcher";
-import { APP_NAME, links } from "@/utils/contants";
+import { APP_NAME, links } from "@/utils/constants";
 import Link from "next/link";
 
-import { delay, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
 import GradientBR from "./GradientBR";
@@ -22,6 +22,8 @@ import GradientBR from "./GradientBR";
 export default function Nav() {
   const path = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <>
       <Navbar
@@ -69,10 +71,19 @@ export default function Nav() {
             <ThemeSwitcher></ThemeSwitcher>
           </NavbarItem>
           <NavbarItem className="hidden lg:flex">
-            <Link href="/login">Login</Link>
+            <Link onClick={() => signIn()} href="/login">
+              Login
+            </Link>
           </NavbarItem>
+
           <NavbarItem>
-            <Button as={Link} color="primary" href="#" variant="bordered">
+            <Button
+              onClick={() => signOut()}
+              as={Link}
+              color="primary"
+              href="#"
+              variant="bordered"
+            >
               Sign Up
             </Button>
           </NavbarItem>

@@ -1,12 +1,20 @@
-import { NextResponse } from "next/server";
+import { withAuth } from "next-auth/middleware";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request) {
-  console.log("MIDLEWARE");
-  return NextResponse.redirect(new URL("/", request.url));
-}
-
-// See "Matching Paths" below to learn more
-export const config = {
-  matcher: "/admin/mi-perfil",
-};
+// middleware is applied to all routes, use conditionals to select
+export default withAuth(
+  // `withAuth` augments your `Request` with the user's token.
+  function middleware(req) {
+    console.log("MIDDLEWARE");
+    console.log(req.nextauth);
+  },
+  {
+    callbacks: {
+      authorized: ({ req, token }) => {
+        if (req.nextUrl.pathname.startsWith("/protected") && token === null) {
+          return false;
+        }
+        return true;
+      },
+    },
+  }
+);

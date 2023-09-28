@@ -1,10 +1,11 @@
 import NextAuth from "next-auth";
+import FacebookProvider from "next-auth/providers/facebook";
+import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
-  // Configure one or more authentication providers
+export const authOptions = {
   providers: [
     Credentials({
       name: "Correo",
@@ -27,6 +28,10 @@ const handler = NextAuth({
         //return await dbUsers.checkUserEmailPassword( credentials!.email, credentials!.password );
       },
     }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_ID,
+      clientSecret: process.env.FACEBOOK_SECRET,
+    }),
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -35,21 +40,24 @@ const handler = NextAuth({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_ID,
+      clientSecret: process.env.DISCORD_SECRET,
+    }),
     // ...add more providers here
   ],
-  secret: process.env.JWT_SECRET,
+  jwt: {
+    // secret: process.env.JWT_SECRET_SEED, // deprecated
+  },
   session: {
     maxAge: 2592000, /// 30d
     strategy: "jwt",
     updateAge: 86400, // cada día
   },
   callbacks: {
-    async jwt({ token, account, user }) {
-      //console.log({ token, account, user });
-
+    async jwt({ token, account, user, profile }) {
       if (account) {
         token.accessToken = account.access_token;
-
         switch (account.type) {
           case "oauth":
             // token.user = await dbUsers.oAUthToDbUser(
@@ -67,14 +75,19 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token, user }) {
-      // console.log({ session, token, user });
-
-      session.accessToken = token.accessToken;
-      session.user = token.user;
-
-      return session;
+      const sanitizedToken = Object.keys(token).reduce((p, c) => {
+        // strip unnecessary properties
+        if (c !== "iat" && c !== "exp" && c !== "jti" && c !== "apiToken") {
+          return { ...p, [c]: token[c] };
+        } else {
+          return p;
+        }
+      }, {});
+      return { ...session, user: sanitizedToken, apiToken: token.apiToken };
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

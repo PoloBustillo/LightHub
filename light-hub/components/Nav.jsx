@@ -71,7 +71,7 @@ export default function Nav() {
             <ThemeSwitcher></ThemeSwitcher>
           </NavbarItem>
           <NavbarItem className="hidden lg:flex">
-            <Link onClick={() => signIn()} href="/login">
+            <Link onClick={() => signIn()} href="/">
               Login
             </Link>
           </NavbarItem>

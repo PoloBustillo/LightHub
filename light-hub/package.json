@@ -28,7 +28,7 @@
   "name": "light-hub",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "npx prisma generate && next build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "set NODE_ENV=development & next start"

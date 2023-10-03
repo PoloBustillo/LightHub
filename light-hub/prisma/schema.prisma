@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource dbsql {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum Role {
+  User
+  ADMIN
+}
+
+model User {
+  user_id           Int           @id @default(autoincrement())
+  email             String        @unique
+  password          String
+  user_name         String
+  institutions      Institution[] @relation(name: "institutionsByUserId")
+  created_projects  Projects[]    @relation(name: "createdByUserId")
+  active_projects   Projects[]    @relation(name: "activedByUserId")
+  favorite_projects Projects[]    @relation(name: "favoritesByUserId")
+  profile           Profile[]
+
+  roles      Role     @default(User)
+  is_active  Boolean  @default(true)
+  is_deleted Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model Institution {
+  institucion_id Int    @id @default(autoincrement())
+  userUser_id    Int?
+  User           User[] @relation(name: "institutionsByUserId")
+}
+
+model Projects {
+  content            String?
+  post_id            Int     @id @default(autoincrement())
+  title              String
+  author             User?   @relation(name: "createdByUserId", fields: [author_id], references: [user_id])
+  active_users       User[]  @relation(name: "activedByUserId")
+  favorite_users     User[]  @relation(name: "favoritesByUserId")
+  active_users_id    Int?
+  favorite_users_ids Int?
+  author_id          Int?
+
+  @@index([author_id, favorite_users_ids, active_users_id])
+}
+
+model Profile {
+  bio        String?
+  profile_id Int     @id @default(autoincrement())
+  user       User    @relation(fields: [user_id], references: [user_id])
+  user_id    Int
+
+  @@index([user_id])
+}

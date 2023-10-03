@@ -4,13 +4,13 @@ import { withAuth } from "next-auth/middleware";
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
   function middleware(req) {
-    console.log("MIDDLEWARE");
-    console.log(req.nextauth);
+    // console.log("MIDDLEWARE");
+    // console.log(req.nextauth);
   },
   {
     callbacks: {
       authorized: ({ req, token }) => {
-        if (req.nextUrl.pathname.startsWith("/protected") && token === null) {
+        if (req.nextUrl.pathname.startsWith("/secure") && token === null) {
           return false;
         }
         return true;

@@ -15,7 +15,7 @@ import { APP_NAME, links } from "@/utils/constants";
 import Link from "next/link";
 
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Icon from "./Icon";
 import GradientBR from "./GradientBR";
 
@@ -23,7 +23,8 @@ export default function Nav() {
   const path = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { data: session } = useSession();
-  console.log(session);
+  const router = useRouter();
+  // console.log(session);
   return (
     <>
       <Navbar
@@ -52,7 +53,7 @@ export default function Nav() {
             </NavbarBrand>
           </Link>
           {links.map((link) => (
-            <NavbarItem>
+            <NavbarItem key={link.label}>
               <Link className="relative font-title2" href={link.href}>
                 {link.href === path && (
                   <motion.span
@@ -71,20 +72,44 @@ export default function Nav() {
             <ThemeSwitcher></ThemeSwitcher>
           </NavbarItem>
           <NavbarItem className="hidden lg:flex">
-            <Link onClick={() => signIn()} href="/">
-              Login
+            {session?.user == null ? (
+              <Link
+                onClick={async () => {
+                  const data = await signIn("", {
+                    redirect: false,
+                    callbackUrl: "/secure/mis-proyectos",
+                  });
+                  console.log(data);
+                  router.push(data.url);
+                }}
+                href="/"
+              >
+                Login
+              </Link>
+            ) : (
+              <>{session?.user?.name}</>
+            )}
+          </NavbarItem>
+          <NavbarItem>
+            <Link href="/register" color="primary" variant="bordered">
+              Sign Up
             </Link>
           </NavbarItem>
-
           <NavbarItem>
             <Button
-              onClick={() => signOut()}
+              onClick={async () => {
+                const data = await signOut({
+                  redirect: false,
+                  callbackUrl: "/",
+                });
+                router.push(data.url);
+              }}
               as={Link}
               color="primary"
               href="#"
               variant="bordered"
             >
-              Sign Up
+              Sign Out
             </Button>
           </NavbarItem>
         </NavbarContent>

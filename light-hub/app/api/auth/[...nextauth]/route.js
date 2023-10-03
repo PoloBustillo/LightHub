@@ -4,8 +4,14 @@ import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import { log } from "console";
 
 export const authOptions = {
+  theme: {
+    colorScheme: "auto", // "auto" | "dark" | "light"
+    brandColor: "#FFF", // Hex color value
+    logo: "/faro.png", // Absolute URL to logo image
+  },
   providers: [
     Credentials({
       name: "Correo",
@@ -22,7 +28,23 @@ export const authOptions = {
         },
       },
       async authorize(credentials) {
-        console.log({ credentials });
+        try {
+          console.log({ credentials });
+          const res = await fetch(process.env.NEXTAUTH_URL + "/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: credentials?.username,
+              password: credentials?.password,
+            }),
+          });
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
+
         return { name: "Juan", correo: "juan@google.com", role: "admin" };
 
         //return await dbUsers.checkUserEmailPassword( credentials!.email, credentials!.password );
@@ -55,11 +77,24 @@ export const authOptions = {
     updateAge: 86400, // cada día
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      const isAllowedToSignIn = true;
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
     async jwt({ token, account, user, profile }) {
+      console.log(user);
       if (account) {
         token.accessToken = account.access_token;
         switch (account.type) {
           case "oauth":
+            console.log("DATA FROM DB??");
             // token.user = await dbUsers.oAUthToDbUser(
             //   user?.email || "",
             //   user?.name || ""

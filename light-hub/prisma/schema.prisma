@@ -17,17 +17,21 @@ enum Role {
 }
 
 model User {
-  user_id           Int           @id @default(autoincrement())
-  email             String        @unique
-  password          String
-  user_name         String
+  user_id        Int     @id @default(autoincrement())
+  role           Role    @default(User)
+  user_name      String  @unique
+  email          String  @unique
+  password       String
+  user_bio       String?
+  picture_url    String?
+  login_provider String?
+
   institutions      Institution[] @relation(name: "institutionsByUserId")
   created_projects  Projects[]    @relation(name: "createdByUserId")
   active_projects   Projects[]    @relation(name: "activedByUserId")
   favorite_projects Projects[]    @relation(name: "favoritesByUserId")
-  profile           Profile[]
+  admin_projects    Projects[]    @relation(name: "adminProjectsByUserId")
 
-  roles      Role     @default(User)
   is_active  Boolean  @default(true)
   is_deleted Boolean  @default(false)
   created_at DateTime @default(now())
@@ -47,18 +51,11 @@ model Projects {
   author             User?   @relation(name: "createdByUserId", fields: [author_id], references: [user_id])
   active_users       User[]  @relation(name: "activedByUserId")
   favorite_users     User[]  @relation(name: "favoritesByUserId")
+  admin_users        User[]  @relation(name: "adminProjectsByUserId")
   active_users_id    Int?
   favorite_users_ids Int?
   author_id          Int?
+  admin_users_id     Int?
 
-  @@index([author_id, favorite_users_ids, active_users_id])
-}
-
-model Profile {
-  bio        String?
-  profile_id Int     @id @default(autoincrement())
-  user       User    @relation(fields: [user_id], references: [user_id])
-  user_id    Int
-
-  @@index([user_id])
+  @@index([author_id, favorite_users_ids, active_users_id, admin_users_id])
 }

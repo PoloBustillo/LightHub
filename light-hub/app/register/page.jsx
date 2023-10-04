@@ -60,7 +60,9 @@ export default function RegisterPage() {
     console.log(data);
     setData(JSON.stringify(data));
     const response = await lightHubApi.post("/signup", data);
-
+    if (response.status === 201) {
+      signIn(undefined, { callbackUrl: "/" });
+    }
     console.log("RESPONSE", response);
   };
 
@@ -131,6 +133,17 @@ export default function RegisterPage() {
             color="primary"
             size="lg"
             placeholder="Password"
+          />
+          <Spacer y={3} />
+          <Input
+            {...register("confirmPassword")}
+            type="password"
+            clearable
+            bordered
+            fullWidth
+            color="primary"
+            size="lg"
+            placeholder="Confirmar Password"
           />
           <Spacer y={3} />
           <Spacer y={1} />

@@ -2,15 +2,29 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
 import { isValidEmail } from "../../../utils/validations";
+import { Prisma } from "@prisma/client";
 
 export async function POST(req, res) {
   const body = await req.json();
 
-  const { email = "", password = "", name = "" } = body;
+  let { email = "", password = "", name = "" } = body;
+
   Sentry.setContext("user", {
     name,
     email,
   });
+
+  if (!name || !email || !password) {
+    return new Response(
+      JSON.stringify({
+        errorMsg: "name email y password son requeridos",
+      }),
+      {
+        status: 400,
+        statusText: "atributes required.",
+      }
+    );
+  }
 
   if (password.length < 6) {
     return new Response(
@@ -54,12 +68,6 @@ export async function POST(req, res) {
     },
   });
 
-  const newUser = {
-    email: email.toLocaleLowerCase(),
-    password: bcrypt.hashSync(password),
-    user_name: name,
-  };
-
   if (user) {
     const { password, ...userWithoutPass } = user;
     return new Response(
@@ -72,6 +80,12 @@ export async function POST(req, res) {
       }
     );
   }
+
+  const newUser = {
+    email: email.toLocaleLowerCase().trim(),
+    password: bcrypt.hashSync(password),
+    user_name: name,
+  };
 
   try {
     const createdUser = await prisma.user.create({
@@ -88,14 +102,10 @@ export async function POST(req, res) {
       }
     );
   } catch (error) {
-    return new Response(
-      JSON.stringify({
-        error: error,
-      }),
-      {
-        status: 400,
-        statusText: "Fallo creación de usuario",
-      }
-    );
+    console.log(error);
+    return new Response(JSON.stringify({ error: error.toString() }), {
+      status: 400,
+      statusText: "Fallo creación de usuario",
+    });
   }
 }

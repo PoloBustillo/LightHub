@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
-import { isValidEmail } from "../../../utils/validations";
+import { isValidEmail } from "../../../../utils/validations";
 
 export async function POST(req, res) {
   const body = await req.json();

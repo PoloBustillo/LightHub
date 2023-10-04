@@ -59,7 +59,7 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     console.log(data);
     setData(JSON.stringify(data));
-    const response = await lightHubApi.post("/signup", data);
+    const response = await lightHubApi.post("/user/create", data);
     if (response.status === 201) {
       signIn(undefined, { callbackUrl: "/" });
     }

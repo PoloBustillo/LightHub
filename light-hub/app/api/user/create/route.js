@@ -1,8 +1,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
-import { isValidEmail } from "../../../utils/validations";
-import { Prisma } from "@prisma/client";
+import { isValidEmail } from "../../../../utils/validations";
 
 export async function POST(req, res) {
   const body = await req.json();
@@ -69,10 +68,11 @@ export async function POST(req, res) {
   });
 
   if (user) {
-    const { password, ...userWithoutPass } = user;
+    const { password, name, email } = user;
     return new Response(
       JSON.stringify({
-        ...userWithoutPass,
+        name,
+        email,
       }),
       {
         status: 400,
@@ -84,7 +84,7 @@ export async function POST(req, res) {
   const newUser = {
     email: email.toLocaleLowerCase().trim(),
     password: bcrypt.hashSync(password),
-    user_name: name,
+    name: name,
   };
 
   try {

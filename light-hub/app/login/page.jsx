@@ -79,7 +79,7 @@ export default function RegisterPage() {
           color="secondary"
           className="my-4"
           onClick={async () => {
-            const { data } = await lightHubApi.post("/signup", {
+            const { data } = await lightHubApi.post("/user/create", {
               email: "email",
               password: "password",
             });

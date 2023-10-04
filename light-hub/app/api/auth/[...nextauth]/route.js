@@ -4,13 +4,18 @@ import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { log } from "console";
 
 export const authOptions = {
   theme: {
     colorScheme: "auto", // "auto" | "dark" | "light"
     brandColor: "#FFF", // Hex color value
     logo: "/faro.png", // Absolute URL to logo image
+  },
+  pages: {
+    signIn: "/login",
+    signOut: "/",
+    error: "/auth/error", // Error code passed in query string as ?error=
+    newUser: "/register",
   },
   providers: [
     Credentials({
@@ -29,25 +34,27 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          console.log({ credentials });
           const res = await fetch(process.env.NEXTAUTH_URL + "/api/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              username: credentials?.username,
+              email: credentials?.email,
               password: credentials?.password,
             }),
           });
-          console.log(res);
-        } catch (error) {
-          console.log(error);
-        }
 
-        return { name: "Juan", correo: "juan@google.com", role: "admin" };
+          const user = await res.json();
 
-        //return await dbUsers.checkUserEmailPassword( credentials!.email, credentials!.password );
+          if (res.ok) {
+            // Any object returned will be saved in `user` property of the JWT
+            return user;
+          } else {
+            // If you return null then an error will be displayed advising the user to check their details.
+            return { error: "OANSDOASD" };
+          }
+        } catch (error) {}
       },
     }),
     FacebookProvider({
@@ -78,6 +85,7 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      console.log("signIn", user);
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
@@ -89,7 +97,7 @@ export const authOptions = {
       }
     },
     async jwt({ token, account, user, profile }) {
-      console.log(user);
+      console.log("JWT", user);
       if (account) {
         token.accessToken = account.access_token;
         switch (account.type) {
@@ -102,7 +110,7 @@ export const authOptions = {
             break;
 
           case "credentials":
-            token.user = user;
+            token = { ...user };
             break;
         }
       }
@@ -118,6 +126,7 @@ export const authOptions = {
           return p;
         }
       }, {});
+
       return { ...session, user: sanitizedToken, apiToken: token.apiToken };
     },
   },

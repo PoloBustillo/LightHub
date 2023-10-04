@@ -1,170 +1,93 @@
 "use client";
+import React from "react";
 
-import { useState, useEffect } from "react";
-import NextLink from "next/link";
-import { signIn, getSession, getProviders } from "next-auth/react";
+import { Input } from "@nextui-org/input";
+import { Card } from "@nextui-org/card";
+import { Spacer } from "@nextui-org/spacer";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Button } from "@nextui-org/button";
+import Link from "next/link";
+import lightHubApi from "@/api-config";
 
-import { useForm } from "react-hook-form";
-
-import { useRouter } from "next/router";
-import { isEmail } from "@/utils/validations";
-
-const LoginPage = () => {
-  //const router = useRouter();
-  // const { loginUser } = useContext( AuthContext );
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const [showError, setShowError] = useState(false);
-
-  const [providers, setProviders] = useState({});
-
-  useEffect(() => {
-    getProviders().then((prov) => {
-      // console.log({prov});
-      setProviders(prov);
-    });
-  }, []);
-
-  const onLoginUser = async ({ email, password }) => {
-    setShowError(false);
-
-    // const isValidLogin = await loginUser( email, password );
-    // if ( !isValidLogin ) {
-    //     setShowError(true);
-    //     setTimeout(() => setShowError(false), 3000);
-    //     return;
-    // }
-    // // Todo: navegar a la pantalla que el usuario estaba
-    // const destination = router.query.p?.toString() || '/';
-    // router.replace(destination);
-    await signIn("credentials", { email, password });
-  };
-
+export default function RegisterPage() {
   return (
-    <form onSubmit={handleSubmit(onLoginUser)} noValidate>
-      {/* <Box sx={{ width: 350, padding:'10px 20px' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant='h1' component="h1">Iniciar Sesión</Typography>
-                            <Chip 
-                                label="No reconocemos ese usuario / contraseña"
-                                color="error"
-                                icon={ <ErrorOutline /> }
-                                className="fadeIn"
-                                sx={{ display: showError ? 'flex': 'none' }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TextField
-                                type="email"
-                                label="Correo"
-                                variant="filled"
-                                fullWidth 
-                                { ...register('email', {
-                                    required: 'Este campo es requerido',
-                                    validate: isEmail
-                                    
-                                })}
-                                error={ !!errors.email }
-                                helperText={ errors.email?.message }
-                            />
-
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Contraseña"
-                                type='password'
-                                variant="filled"
-                                fullWidth 
-                                { ...register('password', {
-                                    required: 'Este campo es requerido',
-                                    minLength: { value: 6, message: 'Mínimo 6 caracteres' }
-                                })}
-                                error={ !!errors.password }
-                                helperText={ errors.password?.message }
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Button
-                                type="submit"
-                                color="secondary"
-                                className='circular-btn'
-                                size='large'
-                                fullWidth>
-                                Ingresar
-                            </Button>
-                        </Grid>
-
-                        <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink 
-                                href={ router.query.p ? `/auth/register?p=${ router.query.p }`: '/auth/register' } 
-                                passHref>
-                                <Link underline='always'>
-                                    ¿No tienes cuenta?
-                                </Link>
-                            </NextLink>
-                        </Grid>
-
-                            
-                        <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
-                            <Divider sx={{ width: '100%', mb: 2 }} />
-                            {
-                                Object.values( providers ).map(( provider: any ) => {
-                                    
-                                    if ( provider.id === 'credentials' ) return (<div key="credentials"></div>);
-
-                                    return (
-                                        <Button
-                                            key={ provider.id }
-                                            variant="outlined"
-                                            fullWidth
-                                            color="primary"
-                                            sx={{ mb: 1 }}
-                                            onClick={ () => signIn( provider.id ) }
-                                        >
-                                            { provider.name }
-                                        </Button>
-                                    )
-
-                                })
-                            }
-
-                        </Grid>
-
-                    </Grid>
-                </Box> */}
-    </form>
+    <div className="flex items-center justify-center h-screen  px-8 rounded-2xl  bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg">
+      <Card className="m-5 p-10">
+        <span className="font-title text-center mb-3">LightHub</span>
+        {/* <Input
+          label="Search"
+          isClearable
+          radius="lg"
+          classNames={{
+            label: "text-black/50 dark:text-white/90",
+            input: [
+              "bg-transparent",
+              "text-black/90 dark:text-white/90",
+              "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+            ],
+            innerWrapper: "bg-transparent",
+            inputWrapper: [
+              "shadow-xl",
+              "bg-default-200/50",
+              "dark:bg-default/60",
+              "backdrop-blur-xl",
+              "backdrop-saturate-200",
+              "hover:bg-default-200/70",
+              "dark:hover:bg-default/70",
+              "group-data-[focused=true]:bg-default-200/50",
+              "dark:group-data-[focused=true]:bg-default/60",
+              "!cursor-text",
+            ],
+          }}
+          placeholder="Type to search..."
+          startContent={
+            <SearchIcon className="text-black/50 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+          }
+        /> */}
+        <Input
+          clearable
+          bordered
+          fullWidth
+          color="primary"
+          size="lg"
+          placeholder="Email"
+        />
+        <Spacer y={2} />
+        <Input
+          clearable
+          bordered
+          fullWidth
+          color="primary"
+          size="lg"
+          placeholder="Nombre"
+        />
+        <Spacer y={2} />
+        <Input
+          clearable
+          bordered
+          fullWidth
+          color="primary"
+          size="lg"
+          placeholder="Password"
+        />
+        <Spacer y={3} />
+        <Checkbox>Remember me</Checkbox>
+        <Spacer y={3} />
+        <Link href="/"> Forgot password?</Link>
+        <Spacer y={1} />
+        <Button
+          color="secondary"
+          className="my-4"
+          onClick={async () => {
+            const { data } = await lightHubApi.post("/signup", {
+              email: "email",
+              password: "password",
+            });
+          }}
+        >
+          Crear cuenta
+        </Button>
+      </Card>
+    </div>
   );
-};
-
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-
-// export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-
-//     const session = await getSession({ req });
-//     // console.log({session});
-
-//     const { p = '/' } = query;
-
-//     if ( session ) {
-//         return {
-//             redirect: {
-//                 destination: p.toString(),
-//                 permanent: false
-//             }
-//         }
-//     }
-
-//     return {
-//         props: { }
-//     }
-// }
-
-export default LoginPage;
+}

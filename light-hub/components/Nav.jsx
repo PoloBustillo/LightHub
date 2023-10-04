@@ -24,7 +24,7 @@ export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  // console.log(session);
+  console.log(session);
   return (
     <>
       <Navbar
@@ -78,7 +78,11 @@ export default function Nav() {
                   const data = await signIn("", {
                     redirect: false,
                     callbackUrl: "/secure/mis-proyectos",
-                  });
+                  })
+                    .then((res) => {
+                      console.log(res);
+                    })
+                    .catch();
                   console.log(data);
                   router.push(data.url);
                 }}

@@ -6,11 +6,11 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
-  theme: {
-    colorScheme: "auto", // "auto" | "dark" | "light"
-    brandColor: "#FFF", // Hex color value
-    logo: "/faro.png", // Absolute URL to logo image
-  },
+  // theme: {
+  //   colorScheme: "auto", // "auto" | "dark" | "light"
+  //   brandColor: "#FFF", // Hex color value
+  //   logo: "/faro.png", // Absolute URL to logo image
+  // },
   pages: {
     signIn: "/login",
     signOut: "/",
@@ -33,6 +33,8 @@ export const authOptions = {
         },
       },
       async authorize(credentials) {
+        console.log("AUTHORIZE", credentials);
+        return { name: "Polo", email: "eiiea#@akds" };
         try {
           const res = await fetch(process.env.NEXTAUTH_URL + "/api/login", {
             method: "POST",
@@ -52,7 +54,7 @@ export const authOptions = {
             return user;
           } else {
             // If you return null then an error will be displayed advising the user to check their details.
-            return { error: "OANSDOASD" };
+            return null;
           }
         } catch (error) {}
       },
@@ -118,6 +120,7 @@ export const authOptions = {
       return token;
     },
     async session({ session, token, user }) {
+      console.log("SESSION", user, token, session);
       const sanitizedToken = Object.keys(token).reduce((p, c) => {
         // strip unnecessary properties
         if (c !== "iat" && c !== "exp" && c !== "jti" && c !== "apiToken") {
@@ -126,8 +129,8 @@ export const authOptions = {
           return p;
         }
       }, {});
-
-      return { ...session, user: sanitizedToken, apiToken: token.apiToken };
+      console.log(sanitizedToken);
+      return { ...session, user: sanitizedToken, apiToken: token.accessToken };
     },
   },
 };

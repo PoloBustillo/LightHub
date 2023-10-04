@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Input } from "@nextui-org/input";
 import { Card } from "@nextui-org/card";
@@ -8,10 +8,52 @@ import { Checkbox } from "@nextui-org/checkbox";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import lightHubApi from "@/api-config";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { getProviders, signIn, useSession } from "next-auth/react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "@/utils/validations";
 
 export default function RegisterPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(loginSchema) });
+  const router = useRouter();
+  const [data, setData] = useState("");
+  const [providers, setProviders] = useState("");
+  const { data: session } = useSession();
+  console.log(errors);
+
+  if (session?.user?.email) {
+    router.push("/");
+  }
+
+  useEffect(() => {
+    (async () => {
+      const res = await getProviders();
+      setProviders(res);
+    })();
+  }, []);
+
+  const onSubmit = async (data) => {
+    console.log(data);
+    setData(JSON.stringify(data));
+    const response = await signIn("credentials", {
+      email: data?.email,
+      password: data?.password,
+      redirect: false,
+      callbackUrl: "/secure/mis-proyectos",
+    });
+
+    if (response.ok) router.push(response.url);
+  };
   return (
-    <div className="flex items-center justify-center h-screen  px-8 rounded-2xl  bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex items-center justify-center h-screen  px-8 rounded-2xl  bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+    >
       <Card className="m-5 p-10">
         <span className="font-title text-center mb-3">LightHub</span>
         {/* <Input
@@ -45,6 +87,7 @@ export default function RegisterPage() {
           }
         /> */}
         <Input
+          {...register("email")}
           clearable
           bordered
           fullWidth
@@ -54,6 +97,7 @@ export default function RegisterPage() {
         />
         <Spacer y={2} />
         <Input
+          {...register("name")}
           clearable
           bordered
           fullWidth
@@ -63,6 +107,7 @@ export default function RegisterPage() {
         />
         <Spacer y={2} />
         <Input
+          {...register("password")}
           clearable
           bordered
           fullWidth
@@ -75,19 +120,10 @@ export default function RegisterPage() {
         <Spacer y={3} />
         <Link href="/"> Forgot password?</Link>
         <Spacer y={1} />
-        <Button
-          color="secondary"
-          className="my-4"
-          onClick={async () => {
-            const { data } = await lightHubApi.post("/user/create", {
-              email: "email",
-              password: "password",
-            });
-          }}
-        >
-          Crear cuenta
+        <Button color="secondary" className="my-4" type="submit">
+          Entrar a LightHub
         </Button>
       </Card>
-    </div>
+    </form>
   );
 }

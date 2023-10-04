@@ -12,34 +12,14 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { object, ref, string } from "yup";
-
-const schema = object({
-  name: string()
-    .required("Please enter your name.")
-    .min(3, "Must be between 3 to 16 characters.")
-    .max(16, "Must be between 3 to 16 characters.")
-    .trim(),
-  email: string()
-    .required("Please enter your email.")
-    .email("Email is invalid.")
-    .trim(),
-  password: string()
-    .required("Please enter your password.")
-    .min(9, "Must be between 9 to 16 characters.")
-    .max(16, "Must be between 9 to 16 characters.")
-    .trim(),
-  confirmPassword: string()
-    .required("Please re enter your password.")
-    .oneOf([ref("password"), null], "Passwords don't match !"),
-}).required();
+import { registrationSchema } from "@/utils/validations";
 
 export default function RegisterPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({ resolver: yupResolver(registrationSchema) });
   const router = useRouter();
   const [data, setData] = useState("");
   const [providers, setProviders] = useState("");

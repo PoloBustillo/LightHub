@@ -122,6 +122,25 @@ export default function RegisterPage() {
         <Button color="secondary" className="my-4" type="submit">
           Entrar a LightHub
         </Button>
+        <div className="text-center">
+          {Object.values(providers).map((provider) => {
+            return (
+              <div key={provider.name} className="my-3">
+                <Button
+                  color="primary"
+                  onClick={async () => {
+                    const data = await signIn(provider.id, {
+                      redirect: false,
+                      callbackUrl: "/secure/mis-proyectos",
+                    });
+                  }}
+                >
+                  Entra con {provider.name}
+                </Button>
+              </div>
+            );
+          })}
+        </div>
       </Card>
     </form>
   );

@@ -96,6 +96,7 @@ export const authOptions = {
         switch (account.type) {
           case "oauth":
             console.log("DATA FROM DB??");
+            token.user = user;
             // token.user = await dbUsers.oAUthToDbUser(
             //   user?.email || "",
             //   user?.name || ""

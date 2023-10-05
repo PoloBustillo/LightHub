@@ -5,7 +5,6 @@ import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import lightHubApi from "@/api-config";
-import axios from "axios";
 
 export const authOptions = {
   // theme: {
@@ -36,7 +35,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          const res = await axios.post("http://localhost:3000/api/user/login", {
+          const res = await lightHubApi.post("/user/login", {
             email: credentials?.email,
             password: credentials?.password,
           });
@@ -92,7 +91,6 @@ export const authOptions = {
       }
     },
     async jwt({ token, account, user, profile }) {
-      console.log("JWT", token, user, account);
       if (account) {
         token.accessToken = account.access_token;
         switch (account.type) {
@@ -115,18 +113,7 @@ export const authOptions = {
     async session({ session, token, user }) {
       session.accessToken = token.accessToken;
       session.user = token.user;
-
       return session;
-      // const sanitizedToken = Object.keys(token).reduce((p, c) => {
-      //   // strip unnecessary properties
-      //   if (c !== "iat" && c !== "exp" && c !== "jti" && c !== "apiToken") {
-      //     return { ...p, [c]: token[c] };
-      //   } else {
-      //     return p;
-      //   }
-      // }, {});
-      // console.log(sanitizedToken);
-      // return { ...session, user: sanitizedToken, apiToken: user.token };
     },
   },
 };

@@ -42,8 +42,8 @@ export default function RegisterPage() {
 
     const { ok, error, url } = await signIn("credentials", {
       redirect: Boolean(false),
-      email: "polo@test.com",
-      password: "gal22v10",
+      email: data.email,
+      password: data.password,
       callbackUrl: "/",
     });
     // if (response.ok) router.push(response.url);

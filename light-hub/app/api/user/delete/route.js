@@ -2,8 +2,20 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
 import { isValidEmail } from "../../../../utils/validations";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
-export async function POST(req, res) {
+export async function DELETE(req, res) {
+  const session = await getServerSession(authOptions);
+  console.log("SESSION", session);
+  // if (session) {
+  //   // Signed in
+  //   console.log("Session", JSON.stringify(session, null, 2));
+  // } else {
+  //   // Not Signed in
+  //   res.status(401);
+  // }
+
   const body = await req.json();
 
   let { email = "" } = body;
@@ -23,29 +35,24 @@ export async function POST(req, res) {
       }
     );
   }
-
-  try {
-    const deleteUser = await prisma.user.delete({
-      where: {
-        email: email,
-      },
-    });
-
-    const { password, ...userWithoutPass } = createdUser;
+  if (session === null) {
     return new Response(
       JSON.stringify({
-        ...userWithoutPass,
+        errorMsg: "no autorizado",
       }),
       {
-        status: 200,
-        statusText: "user deleted.",
+        status: 401,
+        statusText: "no tienes privilegios para eliminar.",
       }
     );
-  } catch (error) {
-    console.log(error);
-    return new Response(JSON.stringify({ error: error.toString() }), {
-      status: 400,
-      statusText: "Fallo creación de usuario",
-    });
   }
+  return new Response(
+    JSON.stringify({
+      status: "Eliminado",
+    }),
+    {
+      status: 200,
+      statusText: "deleted.",
+    }
+  );
 }

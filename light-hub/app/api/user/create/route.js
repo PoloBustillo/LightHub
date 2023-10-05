@@ -13,6 +13,7 @@ export async function POST(req, res) {
     email,
   });
 
+  console.log(name, email, password);
   if (!name || !email || !password) {
     return new Response(
       JSON.stringify({
@@ -20,7 +21,7 @@ export async function POST(req, res) {
       }),
       {
         status: 400,
-        statusText: "atributes required.",
+        statusText: "atributos requeridos.",
       }
     );
   }
@@ -32,7 +33,7 @@ export async function POST(req, res) {
       }),
       {
         status: 400,
-        statusText: "password weak.",
+        statusText: "password debil.",
       }
     );
   }
@@ -64,11 +65,12 @@ export async function POST(req, res) {
   const user = await prisma.user.findFirst({
     where: {
       email: email,
+      is_deleted: false,
     },
   });
 
   if (user) {
-    const { password, name, email } = user;
+    const { name, email } = user;
     return new Response(
       JSON.stringify({
         name,

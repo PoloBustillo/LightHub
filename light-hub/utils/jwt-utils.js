@@ -1,11 +1,20 @@
 import jwt from "jsonwebtoken";
 
-export const signToken = (_id, email) => {
-  if (!process.env.JWT_SECRET) {
+export const signToken = (user) => {
+  if (!process.env.NEXTAUTH_SECRET) {
     throw new Error("No hay semilla de JWT - Revisar variables de entorno");
   }
 
-  return jwt.sign({ _id, email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+  return jwt.sign(
+    // payload
+    { ...user },
+
+    // Seed
+    process.env.NEXTAUTH_SECRET,
+
+    // Opciones
+    { expiresIn: "30d" }
+  );
 };
 
 export const isValidToken = (token) => {

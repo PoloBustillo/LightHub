@@ -4,6 +4,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import lightHubApi from "@/api-config";
+import axios from "axios";
 
 export const authOptions = {
   // theme: {
@@ -33,30 +35,25 @@ export const authOptions = {
         },
       },
       async authorize(credentials) {
-        console.log("AUTHORIZE", credentials);
-        return { name: "Polo", email: "eiiea#@akds" };
         try {
-          const res = await fetch(process.env.NEXTAUTH_URL + "/api/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
+          const res = await axios.post("http://localhost:3000/api/user/login", {
+            email: credentials?.email,
+            password: credentials?.password,
           });
 
-          const user = await res.json();
+          const userWithToken = res.data;
+          console.log("USER WITH TOKEN", userWithToken);
 
-          if (res.ok) {
+          if (userWithToken) {
             // Any object returned will be saved in `user` property of the JWT
-            return user;
+            return userWithToken;
           } else {
             // If you return null then an error will be displayed advising the user to check their details.
             return null;
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log(error);
+        }
       },
     }),
     FacebookProvider({
@@ -78,7 +75,7 @@ export const authOptions = {
     // ...add more providers here
   ],
   jwt: {
-    // secret: process.env.JWT_SECRET_SEED, // deprecated
+    //secret: process.env.NEXTAUTH_SECRET, // deprecated
   },
   session: {
     maxAge: 2592000, /// 30d
@@ -87,19 +84,15 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("signIn", user);
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
       } else {
-        // Return false to display a default error message
         return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
       }
     },
     async jwt({ token, account, user, profile }) {
-      console.log("JWT", user);
+      console.log("JWT", token, user, account);
       if (account) {
         token.accessToken = account.access_token;
         switch (account.type) {
@@ -112,7 +105,7 @@ export const authOptions = {
             break;
 
           case "credentials":
-            token = { ...user };
+            token.user = user;
             break;
         }
       }
@@ -120,21 +113,24 @@ export const authOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      console.log("SESSION", user, token, session);
-      const sanitizedToken = Object.keys(token).reduce((p, c) => {
-        // strip unnecessary properties
-        if (c !== "iat" && c !== "exp" && c !== "jti" && c !== "apiToken") {
-          return { ...p, [c]: token[c] };
-        } else {
-          return p;
-        }
-      }, {});
-      console.log(sanitizedToken);
-      return { ...session, user: sanitizedToken, apiToken: token.accessToken };
+      session.accessToken = token.accessToken;
+      session.user = token.user;
+
+      return session;
+      // const sanitizedToken = Object.keys(token).reduce((p, c) => {
+      //   // strip unnecessary properties
+      //   if (c !== "iat" && c !== "exp" && c !== "jti" && c !== "apiToken") {
+      //     return { ...p, [c]: token[c] };
+      //   } else {
+      //     return p;
+      //   }
+      // }, {});
+      // console.log(sanitizedToken);
+      // return { ...session, user: sanitizedToken, apiToken: user.token };
     },
   },
 };
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, handler as DELETE };

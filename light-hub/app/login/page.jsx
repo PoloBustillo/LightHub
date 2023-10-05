@@ -21,7 +21,7 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(loginSchema) });
   const router = useRouter();
-  const [data, setData] = useState("");
+
   const [providers, setProviders] = useState("");
   const { data: session } = useSession();
   console.log(errors);
@@ -39,15 +39,14 @@ export default function RegisterPage() {
 
   const onSubmit = async (data) => {
     console.log(data);
-    setData(JSON.stringify(data));
-    const response = await signIn("credentials", {
-      email: data?.email,
-      password: data?.password,
-      redirect: false,
-      callbackUrl: "/secure/mis-proyectos",
-    });
 
-    if (response.ok) router.push(response.url);
+    const { ok, error, url } = await signIn("credentials", {
+      redirect: Boolean(false),
+      email: "polo@test.com",
+      password: "gal22v10",
+      callbackUrl: "/",
+    });
+    // if (response.ok) router.push(response.url);
   };
   return (
     <form

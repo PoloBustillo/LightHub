@@ -51,7 +51,23 @@ export const authOptions = {
             return null;
           }
         } catch (error) {
-          console.log(error);
+          if (error.response) {
+            console.log(
+              "Server responded with status code:",
+              error.response.status
+            );
+            console.log("Response data:", error.response.data);
+            throw new Error(error.response.data.error);
+
+            return {
+              ...error.response.data,
+              status: error.response.status,
+            };
+          } else if (error.request) {
+            console.log("No response received:", error.request);
+          } else {
+            console.log("Error creating request:", error.message);
+          }
         }
       },
     }),
@@ -83,6 +99,7 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      throw new Error("custom error to the client");
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
@@ -104,7 +121,12 @@ export const authOptions = {
             break;
 
           case "credentials":
-            token.user = user;
+            console.log(user);
+            if (user.error) {
+              token = { error: user.error };
+            } else {
+              token.user = user;
+            }
             break;
         }
       }
@@ -112,6 +134,11 @@ export const authOptions = {
       return token;
     },
     async session({ session, token, user }) {
+      console.log(token);
+      if (token?.error) {
+        session.error = token.error;
+        return session;
+      }
       session.accessToken = token.accessToken;
       session.user = token.user;
       return session;

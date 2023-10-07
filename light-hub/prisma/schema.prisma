@@ -31,6 +31,7 @@ model User {
   active_projects   Projects[]    @relation(name: "activedByUserId")
   favorite_projects Projects[]    @relation(name: "favoritesByUserId")
   admin_projects    Projects[]    @relation(name: "adminProjectsByUserId")
+  pending_projects  Projects[]    @relation(name: "pendingProjectsByUserId")
 
   is_active  Boolean  @default(true)
   is_deleted Boolean  @default(false)
@@ -52,10 +53,12 @@ model Projects {
   active_users       User[]  @relation(name: "activedByUserId")
   favorite_users     User[]  @relation(name: "favoritesByUserId")
   admin_users        User[]  @relation(name: "adminProjectsByUserId")
+  pending_users      User[]  @relation(name: "pendingProjectsByUserId")
   active_users_id    Int?
   favorite_users_ids Int?
   author_id          Int?
   admin_users_id     Int?
+  pending_users_id   Int?
 
-  @@index([author_id, favorite_users_ids, active_users_id, admin_users_id])
+  @@index([author_id, favorite_users_ids, active_users_id, admin_users_id, pending_users_id])
 }

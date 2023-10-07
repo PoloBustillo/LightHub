@@ -41,7 +41,7 @@ export const loginSchema = object({
     .trim(),
   password: string()
     .required("Please enter your password.")
-    .min(8, "Must be between 9 to 16 characters.")
-    .max(16, "Must be between 9 to 16 characters.")
+    .min(8, "Must be between 8 to 16 characters.")
+    .max(16, "Must be between 8 to 16 characters.")
     .trim(),
 }).required();

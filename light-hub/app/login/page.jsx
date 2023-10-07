@@ -40,12 +40,13 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     console.log(data);
 
-    const { ok, error, url } = await signIn("credentials", {
+    const { ok, error, url, status } = await signIn("credentials", {
       redirect: Boolean(false),
       email: data.email,
       password: data.password,
       callbackUrl: "/",
     });
+    console.log(error, ok, url, status);
     // if (response.ok) router.push(response.url);
   };
   return (

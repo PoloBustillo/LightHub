@@ -75,16 +75,7 @@ export default function Nav() {
             {session?.user == null ? (
               <Link
                 onClick={async () => {
-                  const data = await signIn("", {
-                    redirect: false,
-                    callbackUrl: "/secure/mis-proyectos",
-                  })
-                    .then((res) => {
-                      console.log(res);
-                    })
-                    .catch();
-                  console.log(data);
-                  router.push(data.url);
+                  const data = await signIn();
                 }}
                 href="/"
               >

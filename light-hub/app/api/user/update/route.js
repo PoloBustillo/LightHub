@@ -1,31 +1,38 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
-import { isValidEmail } from "../../../../utils/validations";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export async function POST(req, res) {
-  const body = await req.json();
+export async function PUT(req, res) {
+  const session = await getServerSession(authOptions);
 
-  let { email = "", password = "", name = "" } = body;
-
-  Sentry.setContext("user", {
-    name,
-    email,
-  });
-
-  if (!name || !email || !password) {
+  if (session === null)
     return new Response(
       JSON.stringify({
-        errorMsg: "name email y password son requeridos",
+        errorMsg: "no autorizado",
       }),
       {
-        status: 400,
-        statusText: "atributes required.",
+        status: 401,
+        statusText: "no tienes privilegios para actualizar perfil.",
       }
     );
-  }
 
-  if (password.length < 6) {
+  const ownerEmail = session.user.email;
+  Sentry.setContext("user", {
+    name: session.user.name,
+    ownerEmail,
+  });
+  const body = await req.json();
+
+  let {
+    password = undefined,
+    name = undefined,
+    picture = undefined,
+    user_bio = undefined,
+  } = body;
+
+  if (password !== undefined && password.length < 6) {
     return new Response(
       JSON.stringify({
         errorMsg: "La contraseña debe de ser de 6 caracteres",
@@ -37,10 +44,10 @@ export async function POST(req, res) {
     );
   }
 
-  if (name.length < 2) {
+  if (name !== undefined && name.length < 5) {
     return new Response(
       JSON.stringify({
-        errorMsg: "El nombre debe ser minimo 2 caracteres",
+        errorMsg: "El nombre debe ser minimo 5 caracteres",
       }),
       {
         status: 400,
@@ -49,63 +56,35 @@ export async function POST(req, res) {
     );
   }
 
-  if (!isValidEmail(email)) {
-    return new Response(
-      JSON.stringify({
-        errorMsg: "El correo no es valido",
-      }),
-      {
-        status: 400,
-        statusText: "email invalid.",
-      }
-    );
-  }
-
-  const user = await prisma.user.findFirst({
-    where: {
-      email: email,
-    },
-  });
-
-  if (user) {
-    const { password, name, email } = user;
-    return new Response(
-      JSON.stringify({
-        name,
-        email,
-      }),
-      {
-        status: 400,
-        statusText: "Usuario ya existe.",
-      }
-    );
-  }
-
-  const newUser = {
-    email: email.toLocaleLowerCase().trim(),
-    password: bcrypt.hashSync(password),
-    name: name,
-  };
-
   try {
-    const createdUser = await prisma.user.create({
-      data: newUser,
+    const user = await prisma.user.update({
+      where: {
+        email: ownerEmail,
+      },
+      data: {
+        name: name,
+        picture: picture,
+        user_bio: user_bio,
+        password:
+          password !== undefined ? bcrypt.hashSync(password) : undefined,
+      },
     });
-    const { password, ...userWithoutPass } = createdUser;
+
+    const { password: passwordUser, ...userWithoutPass } = user;
     return new Response(
       JSON.stringify({
         ...userWithoutPass,
       }),
       {
         status: 200,
-        statusText: "user created.",
+        statusText: "user updated.",
       }
     );
   } catch (error) {
     console.log(error);
     return new Response(JSON.stringify({ error: error.toString() }), {
       status: 400,
-      statusText: "Fallo creación de usuario",
+      statusText: "Fallo actualización del usuario",
     });
   }
 }

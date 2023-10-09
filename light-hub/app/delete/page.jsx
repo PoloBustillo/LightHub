@@ -17,6 +17,17 @@ const page = () => {
       >
         DELETE
       </Button>
+      <Button
+        color="primary"
+        onClick={async () => {
+          const response = await lightHubApi.put(API_URL + "/user/update", {
+            name: "UpdatedName",
+          });
+          console.log(response);
+        }}
+      >
+        Update
+      </Button>
     </div>
   );
 };

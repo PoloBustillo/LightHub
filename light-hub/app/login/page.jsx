@@ -46,6 +46,12 @@ export default function RegisterPage() {
       password: data.password,
       callbackUrl: "/",
     });
+
+    Object.keys(error).forEach((e) =>
+      console.log(`key=${e}  value=${yourObj[e]}`)
+    );
+    console.log(JSON.stringify(error));
+
     console.log(JSON.stringify(error), ok, url, status);
     // if (response.ok) router.push(response.url);
   };

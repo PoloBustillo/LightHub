@@ -36,6 +36,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
+          console.log(API_URL + "/user/login");
           const res = await lightHubApi.post(API_URL + "/user/login", {
             email: credentials?.email,
             password: credentials?.password,

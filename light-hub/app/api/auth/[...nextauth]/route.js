@@ -37,7 +37,7 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           console.log(API_URL + "/user/login");
-          const res = await lightHubApi.post(API_URL + "/user/login", {
+          const res = await lightHubApi.post("/user/login", {
             email: credentials?.email,
             password: credentials?.password,
           });
@@ -52,6 +52,8 @@ export const authOptions = {
             return null;
           }
         } catch (error) {
+          throw new Error(JSON.stringify(error));
+          console.log(error);
           if (error.response) {
             console.log(
               "Server responded with status code:",

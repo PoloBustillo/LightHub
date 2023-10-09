@@ -1,9 +1,8 @@
 import axios from "axios";
-const { NEXT_PUBLIC_NEXTAUTH_URL } = process.env;
-const url = `${NEXT_PUBLIC_NEXTAUTH_URL}/api`;
+const { NEXTAUTH_URL } = process.env;
 
 const lightHubApi = axios.create({
-  baseURL: url,
+  baseURL: `${NEXTAUTH_URL}/api`,
   withCredentials: false,
   headers: {
     Accept: "application/json",

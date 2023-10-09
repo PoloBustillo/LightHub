@@ -5,6 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import lightHubApi from "@/api-config";
+import { API_URL } from "@/utils/constants";
 
 export const authOptions = {
   // theme: {
@@ -35,7 +36,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          const res = await lightHubApi.post("/user/login", {
+          const res = await lightHubApi.post(API_URL + "/user/login", {
             email: credentials?.email,
             password: credentials?.password,
           });

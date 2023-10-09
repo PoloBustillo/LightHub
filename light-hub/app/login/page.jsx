@@ -46,7 +46,7 @@ export default function RegisterPage() {
       password: data.password,
       callbackUrl: "/",
     });
-    console.log(error, ok, url, status);
+    console.log(JSON.stringify(error), ok, url, status);
     // if (response.ok) router.push(response.url);
   };
   return (

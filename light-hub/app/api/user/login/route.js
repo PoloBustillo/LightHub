@@ -10,6 +10,17 @@ export async function POST(req, res) {
     email,
   });
 
+  if (!password || !email) {
+    return new Response(
+      JSON.stringify({
+        errorMsg: "password y email son requeridos",
+      }),
+      {
+        status: 400,
+        statusText: "atributos requeridos.",
+      }
+    );
+  }
   try {
     const user = await prisma.user.findFirst({
       where: {

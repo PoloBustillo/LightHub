@@ -41,7 +41,6 @@ export const authOptions = {
           });
 
           const userWithToken = res.data;
-          console.log("USER WITH TOKEN", userWithToken);
 
           if (userWithToken) {
             // Any object returned will be saved in `user` property of the JWT
@@ -58,15 +57,10 @@ export const authOptions = {
             );
             console.log("Response data:", error.response.data);
             throw new Error(error.response.data.error);
-
-            return {
-              ...error.response.data,
-              status: error.response.status,
-            };
           } else if (error.request) {
-            console.log("No response received:", error.request);
+            throw new Error(error.request);
           } else {
-            console.log("Error creating request:", error.message);
+            throw new Error(error.message);
           }
         }
       },
@@ -99,12 +93,11 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      throw new Error("custom error to the client");
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
       } else {
-        return false;
+        throw new Error("EEEOROROR");
       }
     },
     async jwt({ token, account, user, profile }) {
@@ -112,8 +105,15 @@ export const authOptions = {
         token.accessToken = account.access_token;
         switch (account.type) {
           case "oauth":
-            console.log("DATA FROM DB??");
-            token.user = user;
+            console.log("DATA FROM DB", account);
+            const res = await lightHubApi.post("/user/signup", {
+              name: token.name,
+              email: token.email,
+              picture: token.picture,
+              provider: account.provider,
+            });
+            console.log(res);
+            token.user = {};
             // token.user = await dbUsers.oAUthToDbUser(
             //   user?.email || "",
             //   user?.name || ""
@@ -121,7 +121,6 @@ export const authOptions = {
             break;
 
           case "credentials":
-            console.log(user);
             if (user.error) {
               token = { error: user.error };
             } else {
@@ -134,7 +133,6 @@ export const authOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      console.log(token);
       if (token?.error) {
         session.error = token.error;
         return session;

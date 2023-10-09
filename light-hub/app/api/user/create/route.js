@@ -6,14 +6,13 @@ import { isValidEmail } from "../../../../utils/validations";
 export async function POST(req, res) {
   const body = await req.json();
 
-  let { email = "", password = "", name = "" } = body;
+  let { email = "", password = "", name = "", provider = "credentials" } = body;
 
   Sentry.setContext("user", {
     name,
     email,
   });
 
-  console.log(name, email, password);
   if (!name || !email || !password) {
     return new Response(
       JSON.stringify({
@@ -64,8 +63,8 @@ export async function POST(req, res) {
 
   const user = await prisma.user.findFirst({
     where: {
-      email: email,
-      is_deleted: false,
+      OR: [{ email: email }, { name: name }],
+      AND: { is_deleted: false },
     },
   });
 
@@ -87,6 +86,7 @@ export async function POST(req, res) {
     email: email.toLocaleLowerCase().trim(),
     password: bcrypt.hashSync(password),
     name: name,
+    login_provider: provider,
   };
 
   try {

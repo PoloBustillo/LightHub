@@ -21,7 +21,7 @@ model User {
   role           Role    @default(User)
   name           String  @unique
   email          String  @unique
-  password       String
+  password       String?
   user_bio       String?
   picture_url    String?
   login_provider String?

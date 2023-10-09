@@ -132,7 +132,7 @@ export default function RegisterPage() {
           </Button>
           <div className="text-center">
             {Object.values(providers).map((provider) => {
-              return (
+              return provider.type === "oauth" ? (
                 <div key={provider.name} className="my-3">
                   <Button
                     color="primary"
@@ -146,6 +146,8 @@ export default function RegisterPage() {
                     Entra con {provider.name}
                   </Button>
                 </div>
+              ) : (
+                <></>
               );
             })}
           </div>

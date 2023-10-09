@@ -17,6 +17,13 @@ export const signToken = (user) => {
   );
 };
 
+export const dedcodeToken = (token) => {
+  if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error("No hay semilla de JWT - Revisar variables de entorno");
+  }
+  return jwt.verify(token, process.env.NEXTAUTH_SECRET);
+};
+
 export const isValidToken = (token) => {
   if (!process.env.JWT_SECRET) {
     throw new Error("No hay semilla de JWT - Revisar variables de entorno");

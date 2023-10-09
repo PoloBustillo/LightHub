@@ -7,7 +7,7 @@ import { Spacer } from "@nextui-org/spacer";
 import { Checkbox } from "@nextui-org/checkbox";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
-import lightHubApi from "@/api-config";
+
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { getProviders, signIn, useSession } from "next-auth/react";

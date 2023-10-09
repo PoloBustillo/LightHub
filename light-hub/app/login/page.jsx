@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { getProviders, signIn, useSession } from "next-auth/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/utils/validations";
+import { API_URL } from "@/utils/constants";
 
 export default function RegisterPage() {
   const {
@@ -46,9 +47,9 @@ export default function RegisterPage() {
       password: data.password,
       callbackUrl: "/",
     });
-
+    console.log(API_URL);
     Object.keys(error).forEach((e) =>
-      console.log(`key=${e}  value=${yourObj[e]}`)
+      console.log(`key=${e}  value=${error[e]}`)
     );
     console.log(JSON.stringify(error));
 

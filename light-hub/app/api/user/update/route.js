@@ -81,7 +81,6 @@ export async function PUT(req, res) {
       }
     );
   } catch (error) {
-    console.log(error);
     return new Response(JSON.stringify({ error: error.toString() }), {
       status: 400,
       statusText: "Fallo actualización del usuario",

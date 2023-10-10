@@ -24,7 +24,6 @@ export default function RegisterPage() {
 
   const [providers, setProviders] = useState("");
   const { data: session } = useSession();
-  console.log(errors);
 
   if (session?.user?.email) {
     router.push("/");
@@ -45,8 +44,6 @@ export default function RegisterPage() {
       callbackUrl: "/",
     });
 
-
-    console.dir(error)
     console.log(JSON.stringify(error), ok, url, status);
     // if (response.ok) router.push(response.url);
   };

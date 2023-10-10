@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
 import { isValidEmail } from "../../../../utils/validations";
+import logger from "@/app/logger";
 
 export async function POST(req, res) {
   const body = await req.json();
@@ -104,7 +105,7 @@ export async function POST(req, res) {
       }
     );
   } catch (error) {
-    console.log(error);
+    logger.error(error, "Create User API ERROR");
     return new Response(JSON.stringify({ error: error.toString() }), {
       status: 400,
       statusText: "Fallo creación de usuario",

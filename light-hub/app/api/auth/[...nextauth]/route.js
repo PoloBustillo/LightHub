@@ -5,6 +5,8 @@ import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import axios from "axios";
+import logger from "@/app/logger";
+
 const { NEXTAUTH_URL } = process.env;
 
 export const authOptions = {
@@ -36,7 +38,6 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          process.stderr.write("error! some error occurred\n" + NEXTAUTH_URL);
           const res = await axios.post(NEXTAUTH_URL + "/api/user/login", {
             email: credentials?.email,
             password: credentials?.password,
@@ -52,13 +53,12 @@ export const authOptions = {
             return null;
           }
         } catch (error) {
-          console.log(error);
+          logger.error(
+            error,
+            "Authorize Credentials Error:" +
+              JSON.stringify(error?.response?.data)
+          );
           if (error.response) {
-            console.log(
-              "Server responded with status code:",
-              error.response.status
-            );
-            console.log("Response data:", error.response.data);
             throw new Error(error.response.data.error);
           } else if (error.request) {
             throw new Error(error.request);
@@ -108,14 +108,12 @@ export const authOptions = {
         token.accessToken = account.access_token;
         switch (account.type) {
           case "oauth":
-            console.log("DATA FROM DB", account);
             const res = await axios.post(NEXTAUTH_URL + "/api/user/signup", {
               name: token.name,
               email: token.email,
               picture: token.picture,
               provider: account.provider,
             });
-            console.log(res);
             token.user = {};
             // token.user = await dbUsers.oAUthToDbUser(
             //   user?.email || "",

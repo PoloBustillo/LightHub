@@ -24,7 +24,7 @@ export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  console.log(session);
+
   return (
     <>
       <Navbar

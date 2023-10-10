@@ -11,7 +11,7 @@ export const connectDB = async () => {
     const { connection } = await mongoose.connect(DB_URL);
     if (connection.readyState === 1) {
       Sentry.captureMessage("Conectado a MongoDB", "info");
-      console.log("Conectado a la DB!!");
+
       return Promise.resolve(true);
     }
   } catch (error) {

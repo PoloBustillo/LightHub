@@ -13,7 +13,6 @@ const page = () => {
           const response = await axios.delete(
             API_URL + "/user/delete/polo@test3.com"
           );
-          console.log(response);
         }}
       >
         DELETE
@@ -24,7 +23,6 @@ const page = () => {
           const response = await axios.put(API_URL + "/user/update", {
             name: "UpdatedName",
           });
-          console.log(response);
         }}
       >
         Update

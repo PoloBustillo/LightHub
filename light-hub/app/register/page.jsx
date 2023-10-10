@@ -24,7 +24,6 @@ export default function RegisterPage() {
   const [data, setData] = useState("");
   const [providers, setProviders] = useState("");
   const { data: session } = useSession();
-  console.log("ERRORS", errors);
 
   useEffect(() => {
     (async () => {
@@ -37,13 +36,11 @@ export default function RegisterPage() {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
     setData(JSON.stringify(data));
     const response = await axios.post("/user/create", data);
     if (response.status === 201) {
       signIn(undefined, { callbackUrl: "/" });
     }
-    console.log("RESPONSE", response);
   };
 
   return (

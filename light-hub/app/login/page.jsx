@@ -38,8 +38,6 @@ export default function RegisterPage() {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     const { ok, error, url, status } = await signIn("credentials", {
       redirect: Boolean(false),
       email: data.email,
@@ -47,6 +45,8 @@ export default function RegisterPage() {
       callbackUrl: "/",
     });
 
+
+    console.dir(error)
     console.log(JSON.stringify(error), ok, url, status);
     // if (response.ok) router.push(response.url);
   };

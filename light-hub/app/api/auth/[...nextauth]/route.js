@@ -35,7 +35,6 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          console.log(API_URL + "/user/login");
           const res = await axios.post(NEXTAUTH_URL + "/api/user/login", {
             email: credentials?.email,
             password: credentials?.password,
@@ -51,7 +50,6 @@ export const authOptions = {
             return null;
           }
         } catch (error) {
-          throw new Error(JSON.stringify(error));
           console.log(error);
           if (error.response) {
             console.log(
@@ -63,7 +61,7 @@ export const authOptions = {
           } else if (error.request) {
             throw new Error(error.request);
           } else {
-            throw new Error(error.message);
+            throw new Error(JSON.stringify(error));
           }
         }
       },

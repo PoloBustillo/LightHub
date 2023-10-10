@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { registrationSchema } from "@/utils/validations";
+import axios from "axios";
 
 export default function RegisterPage() {
   const {

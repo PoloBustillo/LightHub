@@ -4,6 +4,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import axios from "axios";
 const { NEXTAUTH_URL } = process.env;
 
 export const authOptions = {

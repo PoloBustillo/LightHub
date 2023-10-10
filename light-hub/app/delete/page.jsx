@@ -3,6 +3,8 @@ import React from "react";
 import { Button } from "@nextui-org/button";
 
 import { API_URL } from "@/utils/constants";
+import axios from "axios";
+
 const page = () => {
   return (
     <div>

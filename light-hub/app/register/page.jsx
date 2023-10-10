@@ -6,8 +6,7 @@ import { Input } from "@nextui-org/input";
 import { Card } from "@nextui-org/card";
 import { Spacer } from "@nextui-org/spacer";
 import { Button } from "@nextui-org/button";
-import Link from "next/link";
-import lightHubApi from "@/api-config";
+
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -39,7 +38,7 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     console.log(data);
     setData(JSON.stringify(data));
-    const response = await lightHubApi.post("/user/create", data);
+    const response = await axios.post("/user/create", data);
     if (response.status === 201) {
       signIn(undefined, { callbackUrl: "/" });
     }

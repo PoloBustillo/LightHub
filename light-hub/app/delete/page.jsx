@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { Button } from "@nextui-org/button";
-import lightHubApi from "@/api-config";
 
 import { API_URL } from "@/utils/constants";
 const page = () => {
@@ -9,7 +8,7 @@ const page = () => {
     <div>
       <Button
         onClick={async () => {
-          const response = await lightHubApi.delete(
+          const response = await axios.delete(
             API_URL + "/user/delete/polo@test3.com"
           );
           console.log(response);
@@ -20,7 +19,7 @@ const page = () => {
       <Button
         color="primary"
         onClick={async () => {
-          const response = await lightHubApi.put(API_URL + "/user/update", {
+          const response = await axios.put(API_URL + "/user/update", {
             name: "UpdatedName",
           });
           console.log(response);

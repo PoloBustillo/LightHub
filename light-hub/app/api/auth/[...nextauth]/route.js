@@ -4,8 +4,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import lightHubApi from "@/api-config";
-import { API_URL } from "@/utils/constants";
+const { NEXTAUTH_URL } = process.env;
 
 export const authOptions = {
   // theme: {
@@ -37,7 +36,7 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           console.log(API_URL + "/user/login");
-          const res = await lightHubApi.post("/user/login", {
+          const res = await axios.post(NEXTAUTH_URL + "/api/user/login", {
             email: credentials?.email,
             password: credentials?.password,
           });
@@ -110,7 +109,7 @@ export const authOptions = {
         switch (account.type) {
           case "oauth":
             console.log("DATA FROM DB", account);
-            const res = await lightHubApi.post("/user/signup", {
+            const res = await axios.post(NEXTAUTH_URL + "/api/user/signup", {
               name: token.name,
               email: token.email,
               picture: token.picture,

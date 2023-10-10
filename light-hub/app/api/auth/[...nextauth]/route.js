@@ -36,6 +36,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
+          process.stderr.write("error! some error occurred\n" + NEXTAUTH_URL);
           const res = await axios.post(NEXTAUTH_URL + "/api/user/login", {
             email: credentials?.email,
             password: credentials?.password,

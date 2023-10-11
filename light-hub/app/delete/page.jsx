@@ -10,9 +10,7 @@ const page = () => {
     <div>
       <Button
         onClick={async () => {
-          const response = await axios.delete(
-            API_URL + "/user/delete/polo@test3.com"
-          );
+          const response = await axios.delete(API_URL + "/user/delete");
         }}
       >
         DELETE

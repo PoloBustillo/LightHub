@@ -7,7 +7,6 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(req) {
   const session = await getServerSession(authOptions);
-  let email = "";
 
   if (session === null)
     return new Response(
@@ -20,16 +19,24 @@ export async function GET(req) {
       }
     );
 
-  email = session.user.email;
+  let id = session.user.id;
+  console.log(id);
   Sentry.setContext("user", {
     name: session.user.name,
-    email,
+    id: id,
   });
 
   const user = await prisma.user.findFirst({
     where: {
-      email: email,
-      is_deleted: false,
+      id: id,
+      account: { is_deleted: false },
+    },
+    include: {
+      account: {
+        select: {
+          email: true,
+        },
+      },
     },
   });
 

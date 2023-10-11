@@ -8,25 +8,29 @@ import { dedcodeToken } from "@/utils/jwt-utils";
 export async function DELETE(req) {
   const session = await getServerSession(authOptions);
   let email = session?.user?.email;
-
+  console.log(session);
   if (session === null) {
-    return new Response(
-      JSON.stringify({
-        errorMsg: "no autorizado",
-      }),
-      {
-        status: 401,
-        statusText: "no tienes privilegios para eliminar.",
-      }
-    );
-  } else {
     const authHeader = headers().get("authorization");
 
-    const tokenDecoded = dedcodeToken(
-      authHeader.replace("Bearer", "").split(" ")[1]
-    );
+    if (authHeader != null) {
+      const tokenDecoded = dedcodeToken(
+        authHeader.replace("Bearer", "").split(" ")[1]
+      );
 
-    if (!tokenDecoded) {
+      if (!tokenDecoded) {
+        return new Response(
+          JSON.stringify({
+            errorMsg: "no autorizado",
+          }),
+          {
+            status: 401,
+            statusText: "no tienes privilegios para eliminar.",
+          }
+        );
+      }
+
+      email = tokenDecoded.email;
+    } else {
       return new Response(
         JSON.stringify({
           errorMsg: "no autorizado",
@@ -37,10 +41,9 @@ export async function DELETE(req) {
         }
       );
     }
-    email = tokenDecoded.email;
   }
 
-  const user = await prisma.user.update({
+  const user = await prisma.account.update({
     where: {
       email: email,
     },
@@ -48,7 +51,7 @@ export async function DELETE(req) {
       is_deleted: true,
     },
   });
-
+  console.log(user);
   return new Response(
     JSON.stringify({
       status: "Eliminado",

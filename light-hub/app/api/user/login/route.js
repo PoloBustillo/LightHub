@@ -2,9 +2,12 @@ import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
 import prisma from "@/lib/prisma";
 import { signToken } from "@/utils/jwt-utils";
+import logger from "@/app/logger";
+import { Copse } from "next/font/google";
 
 export async function POST(req, res) {
   const body = await req.json();
+
   const { email = "", password = "" } = body;
   Sentry.setContext("user", {
     email,
@@ -22,9 +25,12 @@ export async function POST(req, res) {
     );
   }
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.account.findFirst({
       where: {
         email: email,
+      },
+      include: {
+        user: true,
       },
     });
 
@@ -41,7 +47,11 @@ export async function POST(req, res) {
         );
       }
 
-      const { password: userPassword, ...userWithoutPass } = user;
+      const {
+        password: userPassword,
+        user: userData,
+        ...userWithoutPass
+      } = user;
       if (!bcrypt.compareSync(password, userPassword)) {
         return new Response(
           JSON.stringify({
@@ -59,6 +69,8 @@ export async function POST(req, res) {
         JSON.stringify({
           token,
           ...userWithoutPass,
+          name: userData.name,
+          picture_url: userData.picture_url,
         }),
         {
           status: 200,
@@ -77,6 +89,7 @@ export async function POST(req, res) {
       );
     }
   } catch (error) {
+    logger.error(error, "Login error");
     return new Response(
       JSON.stringify({
         error: error,

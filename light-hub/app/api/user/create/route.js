@@ -62,9 +62,9 @@ export async function POST(req, res) {
     );
   }
 
-  const user = await prisma.user.findFirst({
+  const user = await prisma.account.findFirst({
     where: {
-      OR: [{ email: email }, { name: name }],
+      OR: [{ email: email }, { user: { name: name } }],
       AND: { is_deleted: false },
     },
   });
@@ -78,7 +78,7 @@ export async function POST(req, res) {
       }),
       {
         status: 400,
-        statusText: "Usuario ya existe.",
+        statusText: "Usuario o Email ya existe.",
       }
     );
   }
@@ -86,13 +86,17 @@ export async function POST(req, res) {
   const newUser = {
     email: email.toLocaleLowerCase().trim(),
     password: bcrypt.hashSync(password),
-    name: name,
     login_provider: provider,
   };
 
   try {
-    const createdUser = await prisma.user.create({
-      data: newUser,
+    const createdUser = await prisma.account.create({
+      data: {
+        ...newUser,
+        user: {
+          create: { name },
+        },
+      },
     });
     const { password, ...userWithoutPass } = createdUser;
     return new Response(

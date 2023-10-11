@@ -18,13 +18,14 @@ import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import Icon from "./Icon";
 import GradientBR from "./GradientBR";
+import logger from "@/app/logger";
 
 export default function Nav() {
   const path = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-
+  logger.info(session);
   return (
     <>
       <Navbar

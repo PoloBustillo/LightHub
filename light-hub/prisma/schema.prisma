@@ -48,7 +48,7 @@ model User {
   zip_code    String?
   user_bio    String?   @dbsql.VarChar(500)
 
-  Account     Account?
+  account     Account?
   skills      Skills[]
   preferences Preferences?
 
@@ -158,8 +158,8 @@ model Tags {
   name        String        @unique
   type        String?
   popularity  Int           @default(1)
-  Projects    Projects[]
-  Preferences Preferences[]
+  projects    Projects[]
+  preferences Preferences[]
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())

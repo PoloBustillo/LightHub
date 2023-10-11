@@ -13,6 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { registrationSchema } from "@/utils/validations";
 import axios from "axios";
+import { API_URL } from "@/utils/constants";
 
 export default function RegisterPage() {
   const {
@@ -37,7 +38,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data) => {
     setData(JSON.stringify(data));
-    const response = await axios.post("/user/create", data);
+    const response = await axios.post(API_URL + "/user/create", data);
     if (response.status === 201) {
       signIn(undefined, { callbackUrl: "/" });
     }

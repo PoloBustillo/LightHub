@@ -13,52 +13,154 @@ datasource dbsql {
 
 enum Role {
   User
-  ADMIN
+  Admin
+}
+
+enum Status {
+  Active
+  Closed
+  Open
+  InProgress
+}
+
+model Account {
+  account_id     Int     @id @default(autoincrement())
+  role           Role    @default(User)
+  email          String  @unique
+  password       String?
+  login_provider String
+  user           User    @relation(fields: [user_id], references: [user_id])
+  user_id        Int     @unique
+
+  is_deleted Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  @@index([user_id])
 }
 
 model User {
-  user_id        Int     @id @default(autoincrement())
-  role           Role    @default(User)
-  name           String  @unique
-  email          String  @unique
-  password       String?
-  user_bio       String?
-  picture_url    String?
-  login_provider String?
+  user_id     Int       @id @default(autoincrement())
+  name        String    @unique
+  gender      String?
+  dob         DateTime?
+  picture_url String?
+  city        String?
+  zip_code    String?
+  user_bio    String?   @dbsql.VarChar(500)
 
-  institutions      Institution[] @relation(name: "institutionsByUserId")
-  created_projects  Projects[]    @relation(name: "createdByUserId")
-  active_projects   Projects[]    @relation(name: "activedByUserId")
-  favorite_projects Projects[]    @relation(name: "favoritesByUserId")
-  admin_projects    Projects[]    @relation(name: "adminProjectsByUserId")
-  pending_projects  Projects[]    @relation(name: "pendingProjectsByUserId")
+  Account     Account?
+  skills      Skills[]
+  preferences Preferences?
 
+  institution       Institution[]
+  created_projects  Projects[]
+  active_projects   Projects[]    @relation(name: "user_active_projects")
+  pending_projects  Projects[]    @relation(name: "user_pending_projects")
+  favorite_projects Projects[]    @relation(name: "user_favorite_projects")
+  admin_projects    Projects[]    @relation(name: "user_admin_projects")
+
+  updated_at DateTime @default(now())
   is_active  Boolean  @default(true)
-  is_deleted Boolean  @default(false)
+}
+
+model Preferences {
+  preference_id        Int     @id @default(autoincrement())
+  user                 User?   @relation(fields: [preferences_profile_id], references: [user_id])
+  email_notifications  Boolean @default(false)
+  privacy_sign         Boolean @default(false)
+  init_online          Boolean @default(true)
+  looking_project      Boolean @default(true)
+  primary_motivation   String?
+  secondary_motivation String?
+  tags                 Tags[]
+
+  preferences_profile_id Int @unique
+
+  @@index([preferences_profile_id])
+}
+
+model Skills {
+  skill_id         Int     @id @default(autoincrement())
+  name             String  @unique
+  years_experience Float?
+  percentage       Float?
+  evidence         String?
+  users            User[]
+}
+
+model Institution {
+  institucion_id    Int               @id @default(autoincrement())
+  name              String            @unique
+  description       String?
+  website           String?           @unique
+  city              String?
+  zip_code          String?
+  user              User[]
+  institution_types InstitutionType[]
+
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 }
 
-model Institution {
-  institucion_id Int    @id @default(autoincrement())
-  userUser_id    Int?
-  User           User[] @relation(name: "institutionsByUserId")
+model InstitutionType {
+  institucion_type_id Int           @id @default(autoincrement())
+  name                String        @unique
+  institution         Institution[]
 }
 
 model Projects {
-  content            String?
-  post_id            Int     @id @default(autoincrement())
-  title              String
-  author             User?   @relation(name: "createdByUserId", fields: [author_id], references: [user_id])
-  active_users       User[]  @relation(name: "activedByUserId")
-  favorite_users     User[]  @relation(name: "favoritesByUserId")
-  admin_users        User[]  @relation(name: "adminProjectsByUserId")
-  pending_users      User[]  @relation(name: "pendingProjectsByUserId")
-  active_users_id    Int?
-  favorite_users_ids Int?
-  author_id          Int?
-  admin_users_id     Int?
-  pending_users_id   Int?
+  project_id       Int        @id @default(autoincrement())
+  description      String?
+  status           Status
+  title            String     @unique
+  location         String?
+  joiners_profiles String     @dbsql.VarChar(500)
+  capacity         Int?
+  support          String     @dbsql.VarChar(300)
+  allow_comments   Boolean    @default(true)
+  photos           Photos[]
+  comments         Comments[]
+  owner_users      User[]
+  active_users     User[]     @relation(name: "user_active_projects")
+  pending_users    User[]     @relation(name: "user_pending_projects")
+  favorite_users   User[]     @relation(name: "user_favorite_projects")
+  admin_users      User[]     @relation(name: "user_admin_projects")
+  tags             Tags[]
 
-  @@index([author_id, favorite_users_ids, active_users_id, admin_users_id, pending_users_id])
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model Comments {
+  comment_id Int    @id @default(autoincrement())
+  content    String
+
+  Projects   Projects? @relation(fields: [project_id], references: [project_id])
+  project_id Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  @@index([project_id])
+}
+
+model Photos {
+  photo_id   Int       @id @default(autoincrement())
+  url        String
+  Projects   Projects? @relation(fields: [project_id], references: [project_id])
+  project_id Int?
+
+  @@index([project_id])
+}
+
+model Tags {
+  tag_id      Int           @id @default(autoincrement())
+  name        String        @unique
+  type        String?
+  popularity  Int           @default(1)
+  Projects    Projects[]
+  Preferences Preferences[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }

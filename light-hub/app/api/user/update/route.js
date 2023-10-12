@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import * as Sentry from "@sentry/nextjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import logger from "@/app/logger";
 
 export async function PUT(req, res) {
   const session = await getServerSession(authOptions);
@@ -18,10 +19,10 @@ export async function PUT(req, res) {
       }
     );
 
-  const ownerEmail = session.user.email;
+  const id = session.user.user_id;
   Sentry.setContext("user", {
     name: session.user.name,
-    ownerEmail,
+    id: id,
   });
   const body = await req.json();
 
@@ -30,6 +31,9 @@ export async function PUT(req, res) {
     name = undefined,
     picture = undefined,
     user_bio = undefined,
+    city = undefined,
+    zip_code = undefined,
+    is_active = undefined,
   } = body;
 
   if (password !== undefined && password.length < 6) {
@@ -57,16 +61,23 @@ export async function PUT(req, res) {
   }
 
   try {
+    //TODO: ADD SKILLS PROJECT INSTITUTIONS
+
     const user = await prisma.user.update({
       where: {
-        email: ownerEmail,
+        user_id: id,
       },
       data: {
         name: name,
-        picture: picture,
+        picture_url: picture,
         user_bio: user_bio,
-        password:
-          password !== undefined ? bcrypt.hashSync(password) : undefined,
+        city: city,
+        zip_code: zip_code,
+        is_active: is_active,
+        account: {
+          password:
+            password !== undefined ? bcrypt.hashSync(password) : undefined,
+        },
       },
     });
 
@@ -81,9 +92,10 @@ export async function PUT(req, res) {
       }
     );
   } catch (error) {
+    logger.error(error);
     return new Response(JSON.stringify({ error: error.toString() }), {
       status: 400,
-      statusText: "Fallo actualización del usuario",
+      statusText: "Fallo actualizacion del usuario",
     });
   }
 }

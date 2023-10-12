@@ -8,7 +8,7 @@ import { dedcodeToken } from "@/utils/jwt-utils";
 export async function DELETE(req) {
   const session = await getServerSession(authOptions);
   let email = session?.user?.email;
-  console.log(session);
+
   if (session === null) {
     const authHeader = headers().get("authorization");
 
@@ -51,7 +51,7 @@ export async function DELETE(req) {
       is_deleted: true,
     },
   });
-  console.log(user);
+
   return new Response(
     JSON.stringify({
       status: "Eliminado",

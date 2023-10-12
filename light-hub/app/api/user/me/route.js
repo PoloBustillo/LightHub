@@ -19,8 +19,8 @@ export async function GET(req) {
       }
     );
 
-  let id = session.user.id;
-  console.log(id);
+  let id = session.user.user_id;
+
   Sentry.setContext("user", {
     name: session.user.name,
     id: id,
@@ -28,7 +28,7 @@ export async function GET(req) {
 
   const user = await prisma.user.findFirst({
     where: {
-      id: id,
+      user_id: id,
       account: { is_deleted: false },
     },
     include: {

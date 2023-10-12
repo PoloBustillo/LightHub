@@ -3,8 +3,6 @@ import prisma from "@/lib/prisma";
 import * as Sentry from "@sentry/nextjs";
 
 export async function GET(req) {
-  console.log("HERE");
-
   const institutions = await prisma.institution.findMany({
     include: {
       user: true,

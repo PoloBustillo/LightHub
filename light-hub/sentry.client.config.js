@@ -11,7 +11,7 @@ Sentry.init({
   tracesSampleRate: 1,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
-  debug: false,
+  debug: true,
 
   replaysOnErrorSampleRate: 1.0,
 
@@ -21,10 +21,10 @@ Sentry.init({
 
   // You can remove this option if you're not planning to use the Sentry Session Replay feature:
   integrations: [
-    new Sentry.Replay({
-      // Additional Replay configuration goes in here, for example:
-      maskAllText: false,
-      blockAllMedia: false,
-    }),
+    // new Sentry.Replay({
+    //   // Additional Replay configuration goes in here, for example:
+    //   maskAllText: false,
+    //   blockAllMedia: false,
+    // }),
   ],
 });

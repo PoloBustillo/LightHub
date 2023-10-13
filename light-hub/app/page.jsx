@@ -8,7 +8,6 @@ export default function Home() {
   return (
     <>
       <Nav></Nav>
-
       <PageWraper>
         <main className="backgroundColor">
           <Particles

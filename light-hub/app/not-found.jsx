@@ -1,11 +1,9 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { Divider } from "@nextui-org/react";
-import { useTheme } from "next-themes";
 import AlternativeLinks from "@/components/AlternativeLinks";
-import { alternativeLinks } from "@/utils/constants";
+import Nav from "@/components/Nav";
 
 const steps = [
   {
@@ -57,6 +55,7 @@ const NotFound = () => {
 
   return (
     <>
+      <Nav></Nav>
       <main>
         <div className="max-w-lg mx-auto text-gray-600">
           <motion.div

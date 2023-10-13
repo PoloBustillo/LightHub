@@ -51,10 +51,6 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <Nav></Nav>
-          {/* <Particles
-            className="absolute inset-0 -z-10 animate-fade-in"
-            quantity={300}
-          /> */}{" "}
           {children}
           <Footer></Footer>
         </Providers>

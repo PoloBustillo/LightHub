@@ -55,7 +55,6 @@ const NotFound = () => {
 
   return (
     <>
-      <Nav></Nav>
       <main>
         <div className="max-w-lg mx-auto text-gray-600">
           <motion.div
@@ -84,9 +83,9 @@ const NotFound = () => {
             <Player autoplay loop src={steps[step].animation} />
           </motion.div>
           <div className="space-y-3 text-center my-10">
-            <h1 class="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-3xl font-extrabold text-transparent sm:text-5xl">
+            <h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-3xl font-extrabold text-transparent sm:text-5xl">
               Understand User Flow.
-              <span class="sm:block"> Increase Conversion. </span>
+              <span className="sm:block"> Increase Conversion. </span>
             </h1>
           </div>
         </div>

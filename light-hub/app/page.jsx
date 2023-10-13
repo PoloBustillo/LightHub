@@ -7,7 +7,6 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <Nav></Nav>
       <PageWraper>
         <main className="backgroundColor">
           <Particles
@@ -26,7 +25,6 @@ export default function Home() {
           <div className="hidden w-screen h-px animate-glow md:block animate-fade-right bg-gradient-to-r from-zinc-300/0 via-zinc-300/50 to-zinc-300/0" />
         </main>
       </PageWraper>
-      <Footer></Footer>
     </>
   );
 }

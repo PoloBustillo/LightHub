@@ -49,7 +49,11 @@ export default function RootLayout({ children }) {
       ].join(" ")}
     >
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Nav></Nav>
+          {children}
+          <Footer></Footer>
+        </Providers>
       </body>
     </html>
   );

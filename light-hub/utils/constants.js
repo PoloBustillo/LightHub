@@ -49,7 +49,7 @@ export const alternativeLinks = [
     ),
     title: "Tutoriales",
     desc: "Como crear tus proyectos",
-    href: "javascript:void(0)",
+    href: "/",
   },
   {
     icon: (
@@ -70,6 +70,6 @@ export const alternativeLinks = [
     ),
     title: "Support",
     desc: "Comunicate con nosotros",
-    href: "javascript:void(0)",
+    href: "/",
   },
 ];

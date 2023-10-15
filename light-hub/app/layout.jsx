@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
 import { APP_NAME, APP_DESCRIPTION } from "@/utils/constants";
+import PageWraper from "@/components/PageWraper";
 const inter = Inter({ subsets: ["latin"] });
 
 const lora = Lora({
@@ -49,11 +50,7 @@ export default function RootLayout({ children }) {
       ].join(" ")}
     >
       <body>
-        <Providers>
-          <Nav></Nav>
-          {children}
-          <Footer></Footer>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

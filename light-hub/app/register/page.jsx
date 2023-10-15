@@ -1,19 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
 import { getProviders, signIn, useSession } from "next-auth/react";
-import { Input } from "@nextui-org/input";
-import { Card } from "@nextui-org/card";
-import { Spacer } from "@nextui-org/spacer";
 import { Button } from "@nextui-org/button";
-
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { registrationSchema } from "@/utils/validations";
 import axios from "axios";
 import { API_URL } from "@/utils/constants";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import RegisterSide from "@/components/RegisterSide";
+import Link from "next/link";
+import LightHouse from "@/components/icons/LightHub";
 
 export default function RegisterPage() {
   const {
@@ -25,15 +23,10 @@ export default function RegisterPage() {
   const [data, setData] = useState("");
   const [providers, setProviders] = useState("");
   const { data: session } = useSession();
-  const [users, setUsers] = useState([]);
-
+  console.log(errors);
+  console.log(data);
   useEffect(() => {
     (async () => {
-      let users = await axios.get(
-        "https://randomuser.me/api/?results=6&inc=picture&noinfo"
-      );
-      setUsers(users?.data?.results);
-
       const res = await getProviders();
       setProviders(res);
       if (session?.user?.email) {
@@ -52,78 +45,51 @@ export default function RegisterPage() {
 
   return (
     <>
+      <div className="block absolute top-3 right-3">
+        <ThemeSwitcher></ThemeSwitcher>
+      </div>
       <main className="w-full flex">
-        <div className="relative flex-1 hidden items-center justify-center h-screen bg-gray-900 lg:flex">
-          <div className="relative z-10 w-full max-w-md">
-            <img src="https://floatui.com/logo-dark.svg" width={150} />
-            <div className=" mt-16 space-y-3">
-              <h3 className="text-white text-3xl font-bold">
-                Una comunidad para alcanzar tus metas
-              </h3>
-              <p className="text-gray-300">
-                Crea una cuenta y ten acceso ilimitado y gratuito a la red más
-                grande para la construcción de proyectos colaborativos.
-              </p>
-              <div className="flex items-center -space-x-2 overflow-hidden">
-                <img
-                  src={users[0]?.picture.thumbnail}
-                  className="w-10 h-10 rounded-full border-2 border-green-200"
-                />
-                <img
-                  src={users[1]?.picture.thumbnail}
-                  className="w-10 h-10 rounded-full border-2 border-green-300"
-                />
-                <img
-                  src={users[2]?.picture.thumbnail}
-                  className="w-10 h-10 rounded-full border-2 border-green-400"
-                />
-                <img
-                  src={users[3]?.picture.thumbnail}
-                  className="w-10 h-10 rounded-full border-2 border-green-500"
-                />
-                <img
-                  src={users[4]?.picture.thumbnail}
-                  className="w-10 h-10 rounded-full border-2 border-green-600"
-                />
-                <p className="text-sm text-gray-400 font-medium translate-x-5">
-                  Más de 1000+ usuarios
-                </p>
-              </div>
-            </div>
-          </div>
-          <div
-            className="absolute inset-0 my-auto h-[500px]"
-            style={{
-              background:
-                "linear-gradient(152.92deg, rgba(192, 132, 252, 0.2) 4.54%, rgba(232, 121, 249, 0.26) 34.2%, rgba(192, 132, 252, 0.1) 77.55%)",
-              filter: "blur(118px)",
-            }}
-          ></div>
-        </div>
+        <RegisterSide></RegisterSide>
         <div className="flex-1 flex items-center justify-center h-screen">
           <div className="w-full max-w-md space-y-8 px-4 bg-inherit text-gray-600 sm:px-0">
             <div className="">
-              <img
-                src="https://floatui.com/logo.svg"
-                width={150}
-                className="lg:hidden"
-              />
+              <div className="justify-center w-full max-md:hidden  md:flex lg:hidden">
+                <LightHouse />
+              </div>
+
               <div className="mt-5 space-y-2">
-                <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
-                  Registrate
+                <h3 className="text-gray-800 dark:text-[whitesmoke] text-2xl font-bold sm:text-3xl">
+                  Regístrate
                 </h3>
-                <p className="">
-                  Already have an account?{" "}
-                  <a
+                <p className="dark:text-gray-300">
+                  Ya tienes una cuenta?{" "}
+                  <Link
                     href="/"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                    className="font-medium text-primary-100 hover:text-indigo-300"
                   >
-                    Log in
-                  </a>
+                    Accede
+                  </Link>
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-x-3">
+              {Object.values(providers).map((provider) => {
+                return provider.type === "oauth" ? (
+                  <div key={provider.name} className="my-3">
+                    <Button
+                      color="primary"
+                      onClick={async () => {
+                        const data = await signIn(provider.id, {
+                          redirect: false,
+                          callbackUrl: "/secure/mis-proyectos",
+                        });
+                      }}
+                    >
+                      Entra con {provider.name}
+                    </Button>
+                  </div>
+                ) : null;
+              })}
               <button className="flex items-center justify-center py-2.5 border rounded-lg hover:bg-gray-50 duration-150 active:bg-gray-100">
                 <svg
                   className="w-5 h-5"
@@ -222,35 +188,84 @@ export default function RegisterPage() {
             </div>
             <div className="relative">
               <span className="block w-full h-px bg-gray-300"></span>
-              <p className="inline-block w-fit text-sm bg-[#F5F5F5] px-2 absolute -top-2 inset-x-0 mx-auto">
+              <p className="inline-block w-fit text-sm bg-background px-2 absolute -top-2 inset-x-0 mx-auto">
                 O continua con
               </p>
             </div>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div>
-                <label className="font-medium">Name</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                />
+                <label
+                  for={"Email"}
+                  className="font-medium relative block rounded-md border-2 bg-transparent border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <input
+                    {...register("email")}
+                    type="email"
+                    id={"Email"}
+                    className="peer w-full mt-2 px-3 py-2 border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder={"Email"}
+                  />
+
+                  <span className="pointer-events-none absolute bg-background start-2.5 top-0 -translate-y-1/2  p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                    {"Email"}
+                  </span>
+                </label>
               </div>
               <div>
-                <label className="font-medium">Email</label>
-                <input
-                  type="email"
-                  required
-                  className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                />
+                <label
+                  for={"Nombre"}
+                  className="font-medium relative block rounded-md border-2 bg-transparent border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <input
+                    {...register("name")}
+                    type="text"
+                    id={"Nombre"}
+                    className="peer w-full mt-2 px-3 py-2 border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder={"Nombre"}
+                  />
+
+                  <span className="pointer-events-none absolute bg-background start-2.5 top-0 -translate-y-1/2  p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                    {"Nombre"}
+                  </span>
+                </label>
               </div>
               <div>
-                <label className="font-medium">Password</label>
-                <input
-                  type="password"
-                  required
-                  className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                />
+                <label
+                  for={"Contraseña"}
+                  className="font-medium relative block rounded-md border-2 bg-transparent border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <input
+                    {...register("password")}
+                    type="password"
+                    id={"Contraseña"}
+                    className="peer w-full mt-2 px-3 py-2 border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder={"Contraseña"}
+                  />
+
+                  <span className="pointer-events-none absolute bg-background start-2.5 top-0 -translate-y-1/2  p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                    {"Contraseña"}
+                  </span>
+                </label>
               </div>
+              <div>
+                <label
+                  for={"Confirmar Contraseña"}
+                  className="font-medium relative block rounded-md border-2 bg-transparent border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <input
+                    {...register("confirmPassword")}
+                    type="password"
+                    id={"Confirmar Contraseña"}
+                    className="peer w-full mt-2 px-3 py-2 border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder={"Confirmar Contraseña"}
+                  />
+
+                  <span className="pointer-events-none absolute bg-background start-2.5 top-0 -translate-y-1/2  p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                    {"Confirmar Contraseña"}
+                  </span>
+                </label>
+              </div>
+
               <button className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150">
                 Create account
               </button>
@@ -258,7 +273,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </main>
-      <form
+      {/* <form
         onSubmit={handleSubmit(onSubmit)}
         className="m-3 flex items-center justify-center h-screen  px-8 rounded-2xl  bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
       >
@@ -293,7 +308,7 @@ export default function RegisterPage() {
           startContent={
             <SearchIcon className="text-black/50 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
           }
-        /> */}
+        />
           <Input
             {...register("email")}
             clearable
@@ -360,7 +375,7 @@ export default function RegisterPage() {
             })}
           </div>
         </Card>
-      </form>
+      </form> */}
     </>
   );
 }

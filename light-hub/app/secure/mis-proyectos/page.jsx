@@ -3,11 +3,9 @@ import React from "react";
 
 const ProfilePage = () => {
   return (
-    <PageWraper>
-      <h1 className="text-5xl w-full  py-20 text-center text-gray-500">
-        Mi Perfil
-      </h1>
-    </PageWraper>
+    <h1 className="text-5xl w-full  py-20 text-center text-gray-500">
+      Mi Perfil
+    </h1>
   );
 };
 

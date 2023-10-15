@@ -2,7 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --num {
+    syntax: '<integer>';
+    initial-value: 1001;
+    inherits: false;
+  }
 
+  .user-count {
+    animation: counter 20s backwards normal ease-out;
+    counter-reset: num var(--num);
+  }
+
+  .user-count::after {
+    content: counter(num);
+  }
+  
+  @keyframes counter {
+    from {
+      --num: 840;
+    }
+    to {
+      --num: 1000;
+    }
+  }
 @layer base {
     .dark .text-edge-outline {
         -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);

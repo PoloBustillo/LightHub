@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { getProviders, signIn, useSession } from "next-auth/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/utils/validations";
+import PageWraper from "@/components/PageWraper";
 
 export default function RegisterPage() {
   const {
